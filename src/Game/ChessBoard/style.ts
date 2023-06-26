@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const BoardWrap = styled.div`
-
+  user-select: none;
 `
 
 export const BoardBlock = styled.div`
@@ -33,4 +33,23 @@ export const DarkSquare = styled(Square)`
 
 export const LightSquare = styled(Square)`
   background-color: var(--color-sh);
+`
+
+export const DotWrap = styled.div`
+  position: absolute;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  cursor: pointer;
+`
+
+export const MoveableDot = styled.div`
+  width: 30%;
+  height: 30%;
+  border-radius: 50%;
+  background-color: rgba(0,0,0,0.5);
 `

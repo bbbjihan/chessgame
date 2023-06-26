@@ -1,6 +1,7 @@
 import { ReactElement } from "react"
 import { Row } from "react-bootstrap"
 import { useRecoilValue } from "recoil"
+import { getSquareIndex } from "../../utils/functions"
 import { moveableSquareState, positionArrState } from "../../utils/recoil"
 import ChessPiece from "../ChessPiece"
 import MoveablePoint from "./MoveablePoint"
@@ -27,34 +28,49 @@ const ChessBoard = (): ReactElement => {
             return (
               <Row key={rowIndex}>
                 {row.map((square: number, squareIndex: number) => {
-                  const piece = position[rowIndex][squareIndex]
+                  const piece = position[rowIndex][squareIndex];
+                  const moveable = moveableSquare[rowIndex][squareIndex];
                   return (
                     square === 0 ?
                       <DarkSquare
                         key={rowIndex * 10 + squareIndex}
                       >
-                        <MoveablePoint/>
-                        {piece === "" ?
-                          ""
-                          :
-                          <ChessPiece
-                            piece={piece}
-                            squareIndex={getSquareIndex(rowIndex,squareIndex)}
-                            row={rowIndex}
-                            col={squareIndex}
-                          />
+                        {
+                          moveable ?
+                            <MoveablePoint
+                              destination={getSquareIndex(rowIndex, squareIndex)} />
+                            :
+                            ""
+                        }
+                        {
+                          piece === "" ?
+                            ""
+                            :
+                            <ChessPiece
+                              piece={piece}
+                              squareIndex={getSquareIndex(rowIndex, squareIndex)}
+                              row={rowIndex}
+                              col={squareIndex}
+                            />
                         }
                       </DarkSquare>
                       :
                       <LightSquare
                         key={rowIndex * 10 + squareIndex}
                       >
+                        {
+                          moveable ?
+                            <MoveablePoint
+                              destination={getSquareIndex(rowIndex, squareIndex)} />
+                            :
+                            ""
+                        }
                         {piece === "" ?
                           ""
                           :
                           <ChessPiece
                             piece={piece}
-                            squareIndex={getSquareIndex(rowIndex,squareIndex)}
+                            squareIndex={getSquareIndex(rowIndex, squareIndex)}
                             row={rowIndex}
                             col={squareIndex}
                           />
@@ -70,10 +86,4 @@ const ChessBoard = (): ReactElement => {
     </BoardWrap>
   )
 }
-
-const getSquareIndex = (row:number, column:number):string => {
-  const rank = ["a","b","c","d","e","f","g","h"]
-  return `${rank[column]}${8 - row}`
-}
-
 export default ChessBoard

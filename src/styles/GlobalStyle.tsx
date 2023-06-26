@@ -6,7 +6,9 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body{
-    --color-sh: #f0d9b5;
-    --color-dk: #b58863;
+    --color-wsh: #f0d9b5;
+    --color-wdk: #b58863;
+    --color-sh: rgb(238,238,210);
+    --color-dk: rgb(118,150,86);
   }
 `

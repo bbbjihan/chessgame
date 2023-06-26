@@ -39,7 +39,6 @@ export const positionArrState = selector<string[][]>({
 
       positionArr.push(rowArr);
     })
-
     return positionArr
   })
 })
@@ -72,4 +71,19 @@ export const halfMoveState = atom<number>({
 export const fullMoveState = atom<number>({
   key: "fullMoveState",
   default: 0
+})
+
+export const movingPieceState = atom<string>({
+  key: "movingPieceState",
+  default: ""
+})
+
+export const movingStartState = atom<string>({
+  key: "movingStartState",
+  default: ""
+})
+
+export const pieceCapturedState = atom<string[]>({
+  key: "pieceCapturedState",
+  default: []
 })

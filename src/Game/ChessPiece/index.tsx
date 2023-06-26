@@ -1,19 +1,9 @@
 import { ReactElement } from "react";
-import { useSetRecoilState } from "recoil";
-import bB from "../../img/chesspieces/bB.png";
-import bK from "../../img/chesspieces/bK.png";
-import bN from "../../img/chesspieces/bN.png";
-import bP from "../../img/chesspieces/bP.png";
-import bQ from "../../img/chesspieces/bQ.png";
-import bR from "../../img/chesspieces/bR.png";
-import wB from "../../img/chesspieces/wB.png";
-import wK from "../../img/chesspieces/wK.png";
-import wN from "../../img/chesspieces/wN.png";
-import wP from "../../img/chesspieces/wP.png";
-import wQ from "../../img/chesspieces/wQ.png";
-import wR from "../../img/chesspieces/wR.png";
-import { moveableSquareState } from "../../utils/recoil";
-import { ChessPieceIMG, ChessPieceWrap } from "./style";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { getSquareIndex } from "../../utils/functions";
+import { moveableSquareState, movingPieceState, movingStartState, positionArrState } from "../../utils/recoil";
+import PieceImg from './PieceImg';
+import { ChessPieceWrap } from "./style";
 
 interface ChessPieceProps {
   piece: string
@@ -24,46 +14,70 @@ interface ChessPieceProps {
 
 const ChessPiece = ({ piece, squareIndex, row, col }: ChessPieceProps): ReactElement => {
   const setMoveableSquare = useSetRecoilState(moveableSquareState);
+  const position = useRecoilValue(positionArrState);
+  const setMovingPiece = useSetRecoilState(movingPieceState);
+  const setMovingStart = useSetRecoilState(movingStartState);
 
   const handleMove = () => {
+    let moveable = new Array(8).fill(false).map(() => new Array(8).fill(false));
+    setMovingPiece(piece);
+    setMovingStart(getSquareIndex(row,col));
+    switch (piece) {
+      case "P":
+        //흰색 폰 movement 정의
+        
+        if(row === 6 && !position[4][col]) moveable[4][col] = true;
+        //위로 두 칸 전진
+        if(row > 0 && !position[row-1][col]) moveable[row-1][col] = true;
+        //위로 한 칸 전진
+        if(row > 0 && col > 0 && position[row-1][col-1]) moveable[row-1][col-1] = true;
+        //왼쪽 위로 먹으면서 전진
+        if(row > 0 && col < 7 && position[row-1][col+1]) moveable[row-1][col+1] = true;
+        //오른쪽 위로 먹으면서 전진
+        setMoveableSquare(moveable);
+        break;
+      case "p":
+        //검은색 폰 movement 정의
+
+        if(row === 1 && !position[3][col]) moveable[3][col] = true;
+        //아래로 두 칸 전진
+        if(row < 7 && !position[row+1][col]) moveable[row+1][col] = true;
+        //아래로 한 칸 전진
+        if(row < 7 && col > 0 && position[row+1][col-1]) moveable[row+1][col-1] = true;
+        //왼쪽 아래로 먹으면서 전진
+        if(row < 7 && col < 7 && position[row+1][col+1]) moveable[row+1][col+1] = true;
+        //오른쪽 아래로 먹으면서 전진
+        setMoveableSquare(moveable);
+        break;
+      case "N" || "n":
+        setMoveableSquare(moveable);
+        break;
+      case "B" || "b":
+        setMoveableSquare(moveable);
+        break;
+      case "R" || "r":
+        setMoveableSquare(moveable);
+        break;
+      case "Q" || "q":
+        setMoveableSquare(moveable);
+        break;
+      case "K" || "k":
+        setMoveableSquare(moveable);
+        break;
+      default:
+        break;
+    }
   }
 
   return (
-    <ChessPieceWrap>
-      <ChessPieceIMG src={getPieceImgSrc(piece)} onClick={handleMove} />
+    <ChessPieceWrap
+      onClick={handleMove}
+    >
+      <PieceImg
+        piece={piece}
+      />
     </ChessPieceWrap>
   )
-}
-
-const getPieceImgSrc = (piece: string): string => {
-  switch (piece) {
-    case ("b"):
-      return bB;
-    case ("k"):
-      return bK;
-    case ("n"):
-      return bN;
-    case ("p"):
-      return bP;
-    case ("q"):
-      return bQ;
-    case ("r"):
-      return bR;
-    case ("B"):
-      return wB;
-    case ("K"):
-      return wK;
-    case ("N"):
-      return wN;
-    case ("P"):
-      return wP;
-    case ("Q"):
-      return wQ;
-    case ("R"):
-      return wR;
-    default:
-      return "";
-  }
 }
 
 export default ChessPiece;
