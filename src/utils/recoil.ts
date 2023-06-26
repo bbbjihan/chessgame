@@ -2,13 +2,13 @@ import { atom, selector } from "recoil";
 
 export const FENState = selector<string>({
   key: "FENState",
-  get: (({get}) => {
-    const position:string = get(positionState);
-    const turn:string = get(turnState);
-    const castle:string = get(castleState);
-    const enPassant:string = get(enPassantState);
-    const halfMove:string = get(halfMoveState).toString();
-    const fullMove:string = get(fullMoveState).toString();
+  get: (({ get }) => {
+    const position: string = get(positionState);
+    const turn: string = get(turnState);
+    const castle: string = get(castleState);
+    const enPassant: string = get(enPassantState);
+    const halfMove: string = get(halfMoveState).toString();
+    const fullMove: string = get(fullMoveState).toString();
 
     return `${position} ${turn} ${castle} ${enPassant} ${halfMove} ${fullMove}`;
   })
@@ -20,19 +20,19 @@ export const positionState = atom<string>({
 })
 
 export const positionArrState = selector<string[][]>({
-  key: "positionArr",
-  get: (({get}) => {
-    const positionSplited:string[] = get(positionState).split('/');
-    let positionArr:string[][] = []
+  key: "positionArrState",
+  get: (({ get }) => {
+    const positionSplited: string[] = get(positionState).split('/');
+    let positionArr: string[][] = []
 
-    positionSplited.forEach((row:string, rowIndex:number) => {
-      const rowSplited:string[] = row.split('');
-      let rowArr:string[] = []
+    positionSplited.forEach((row: string, rowIndex: number) => {
+      const rowSplited: string[] = row.split('');
+      let rowArr: string[] = []
 
-      rowSplited.forEach((square:string, squareIndex:number) => {
-        if(parseInt(square)){
-          for(let i = 0; i < parseInt(square); i++) rowArr.push("")
-        }else{
+      rowSplited.forEach((square: string, squareIndex: number) => {
+        if (parseInt(square)) {
+          for (let i = 0; i < parseInt(square); i++) rowArr.push("")
+        } else {
           rowArr.push(square)
         }
       })
@@ -40,6 +40,52 @@ export const positionArrState = selector<string[][]>({
       positionArr.push(rowArr);
     })
     return positionArr
+  })
+})
+
+export const pieceScoreState = selector<number[]>({
+  key: "pieceScoreState",
+  get: (({ get }) => {
+    let pieceScore = [0, 0, 0]
+    const positionSplited: string[] = get(positionState).split('/');
+    positionSplited.forEach((row: string, rowIndex: number) => {
+      row.split('').forEach((square: string, squareIndex: number) => {
+        switch (square) {
+          case "p":
+            pieceScore[1] += 1;
+            break;
+          case "n":
+            pieceScore[1] += 3;
+            break;
+          case "b":
+            pieceScore[1] += 3;
+            break;
+          case "r":
+            pieceScore[1] += 5;
+            break;
+          case "q":
+            pieceScore[1] += 9;
+            break;
+          case "P":
+            pieceScore[0] += 1;
+            break;
+          case "N":
+            pieceScore[0] += 3;
+            break;
+          case "B":
+            pieceScore[0] += 3;
+            break;
+          case "R":
+            pieceScore[0] += 5;
+            break;
+          case "Q":
+            pieceScore[0] += 9;
+            break;
+        }
+      })
+    })
+    pieceScore[2] = pieceScore[0] - pieceScore[1];
+    return pieceScore;
   })
 })
 

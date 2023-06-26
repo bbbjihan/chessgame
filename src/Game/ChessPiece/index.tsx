@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { getSquareIndex } from "../../utils/functions";
-import { moveableSquareState, movingPieceState, movingStartState, positionArrState } from "../../utils/recoil";
+import { moveableSquareState, movingPieceState, movingStartState, positionArrState, turnState } from "../../utils/recoil";
 import PieceImg from './PieceImg';
 import { ChessPieceWrap } from "./style";
 
@@ -17,6 +17,7 @@ const ChessPiece = ({ piece, squareIndex, row, col }: ChessPieceProps): ReactEle
   const position = useRecoilValue(positionArrState);
   const setMovingPiece = useSetRecoilState(movingPieceState);
   const setMovingStart = useSetRecoilState(movingStartState);
+  const turn = useRecoilValue(turnState);
 
   const isOpponent = (attacker: string, defencer: string): boolean => {
     if (defencer === "") return true;
@@ -28,6 +29,10 @@ const ChessPiece = ({ piece, squareIndex, row, col }: ChessPieceProps): ReactEle
     let moveable = new Array(8).fill(false).map(() => new Array(8).fill(false));
     setMovingPiece(piece);
     setMovingStart(getSquareIndex(row, col));
+    if((piece === piece.toUpperCase()) !== (turn === "w")){ //not your turn.
+      setMoveableSquare(moveable);
+      return;
+    }
     let [destiRow, destiCol] = [0, 0]
     switch (piece) {
 
