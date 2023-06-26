@@ -1,14 +1,18 @@
-In the project directory, you can run:
+Chess game mini project
+=
+Developed by Jihan(2023.06.25 ~)
 
-### `npm start`
-
+`$npm start`
+=
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
-### TodoList
+
+TodoList
+=
 #### functional
 - [x] 체스말 움직임
 - [x] 차례 넘기기
