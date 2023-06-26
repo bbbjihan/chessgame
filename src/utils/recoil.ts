@@ -129,6 +129,11 @@ export const movingStartState = atom<string>({
   default: ""
 })
 
+export const destinationState = atom<string>({
+  key: "destinationState",
+  default: ""
+})
+
 export const pieceCapturedState = atom<string[]>({
   key: "pieceCapturedState",
   default: []

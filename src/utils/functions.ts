@@ -26,22 +26,3 @@ export const getPositionString = (positionArr:string[][]): string => {
   })
   return positionString
 }
-
-export const pieceMovement = (positionArr:string[][], setPosition:Function, movingPiece:string, movingStart:string, destination:string):void => {
-
-  let result:string[][] = new Array(8).fill("").map(() => new Array(8).fill(""))
-  for(let i = 0; i < 8; i++) for(let j = 0; j < 8; j++) result[i][j] = positionArr[i][j];
-
-  const [startRow, startCol]:[number, number] = getNumberIndex(movingStart);
-  const [destiRow, destiCol]:[number, number] = getNumberIndex(destination);
-
-  console.log(result);
-  console.log(result[startRow][startCol])
-  result[startRow][startCol] = "";
-  result[destiRow][destiCol] = movingPiece;
-
-  const resultString = getPositionString(result);
-  console.log(`move ${movingPiece} from ${movingStart}(${startRow}/${startCol}) to ${destination}(${destiRow}/${destiCol}), result is ${resultString}.`)
-
-  setPosition(resultString);
-}

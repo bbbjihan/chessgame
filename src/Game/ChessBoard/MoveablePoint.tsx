@@ -1,7 +1,7 @@
 import { ReactElement } from 'react';
-import { useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
-import { pieceMovement } from '../../utils/functions';
-import { moveableSquareState, movingPieceState, movingStartState, positionArrState, positionState, turnState } from '../../utils/recoil';
+import { useResetRecoilState, useSetRecoilState } from 'recoil';
+import { pieceMoveState } from '../../utils/pieceMove';
+import { destinationState, moveableSquareState, movingPieceState, movingStartState, turnState } from '../../utils/recoil';
 import { DotWrap, MoveableDot } from './style';
 
 interface MoveablePointProps {
@@ -9,19 +9,18 @@ interface MoveablePointProps {
 }
 
 const MoveablePoint = ({ destination }: MoveablePointProps): ReactElement => {
-  const positionArr = useRecoilValue(positionArrState);
-  const movingPiece = useRecoilValue(movingPieceState);
-  const movingStart = useRecoilValue(movingStartState);
-  
-  const setPosition = useSetRecoilState(positionState);
   const setTurn = useSetRecoilState(turnState);
+  const setDestination = useSetRecoilState(destinationState);
 
   const resetMovingPiece = useResetRecoilState(movingPieceState);
   const resetMoveableSqaure = useResetRecoilState(moveableSquareState);
   const resetMovingStart = useResetRecoilState(movingStartState);
 
+  const pieceMove = useSetRecoilState(pieceMoveState);
   const onClick = () => {
-    pieceMovement(positionArr, setPosition, movingPiece, movingStart, destination)
+    setDestination(destination);
+    pieceMove();
+
     setTurn((prev)=>{
       if(prev === "w"){
         return "b"
@@ -29,9 +28,11 @@ const MoveablePoint = ({ destination }: MoveablePointProps): ReactElement => {
         return "w"
       }
     })
+
     resetMoveableSqaure();
     resetMovingPiece();
     resetMovingStart();
+    setDestination("");
   }
   
   return (
