@@ -13,42 +13,49 @@ import wR from "../../img/chesspieces/chessdotcom/wR.png";
 import { ChessPieceIMG } from "./style";
 
 interface PieceImgProps {
-  piece: string,
+  piece: string;
 }
 
-const PieceImg = ({ piece }:PieceImgProps) => {
-  return <ChessPieceIMG src={getPieceImgSrc(piece)} />
-}
+const PieceImg = ({ piece }: PieceImgProps) => {
+  return <ChessPieceIMG src={getPieceImgSrc(piece)} />;
+};
 
 const getPieceImgSrc = (piece: string): string => {
+  // 이런 스위치문의 경우 객체 map 을 사용하는것도 좋다고 생각해요
+  // ex)
+  // {
+  //   'b': bB,
+  //   'k': bK,
+  //   ...
+  // }
   switch (piece) {
-    case ("b"):
+    case "b":
       return bB;
-    case ("k"):
+    case "k":
       return bK;
-    case ("n"):
+    case "n":
       return bN;
-    case ("p"):
+    case "p":
       return bP;
-    case ("q"):
+    case "q":
       return bQ;
-    case ("r"):
+    case "r":
       return bR;
-    case ("B"):
+    case "B":
       return wB;
-    case ("K"):
+    case "K":
       return wK;
-    case ("N"):
+    case "N":
       return wN;
-    case ("P"):
+    case "P":
       return wP;
-    case ("Q"):
+    case "Q":
       return wQ;
-    case ("R"):
+    case "R":
       return wR;
     default:
       return "";
   }
-}
+};
 
 export default PieceImg;
