@@ -12,7 +12,7 @@ root.render(
   <RecoilRoot>
     <GlobalStyle />
     <GlobalFonts />
-    <BrowserRouter>
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
       <App />
     </BrowserRouter>
   </RecoilRoot>
