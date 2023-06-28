@@ -1,5 +1,10 @@
 import { atom, selector } from "recoil";
 
+export const rotateState = atom<boolean>({
+  key: "rotateState",
+  default: false
+})
+
 export const FENState = selector<string>({
   key: "FENState",
   get: (({ get }) => {
@@ -16,7 +21,7 @@ export const FENState = selector<string>({
 
 export const positionState = atom<string>({
   key: "positionState",
-  default: "8/8/8/8/8/5K2/Q7/7k"
+  default: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
 })
 //기본 시작 포지션"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
 //스테일메이트 테스트용 포지션 "8/8/8/8/8/5K2/Q7/5k2"

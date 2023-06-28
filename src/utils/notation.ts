@@ -17,23 +17,20 @@ export const setNotationState = selector({
     const checked = get(checkedState);
     const checkMated = get(checkMatedState);
 
-    const newNot = `${
-      movingPiece === "P" || movingPiece === "p" ?
-      ``
-      :
-      movingPiece.toUpperCase()
-      }${destination
-      }${
-        (turn === "w" ? checked[0] : checked[1]) ?
-        `+`
-        :
+    const newNot = `${movingPiece === "P" || movingPiece === "p" ?
         ``
-      }${
-        (turn === "w" ? checkMated[0] : checkMated[1]) ?
+        :
+        movingPiece.toUpperCase()
+      }${destination
+      }${(turn === "w" ? checkMated[0] : checkMated[1]) ?
         `#`
         :
-        ``
+        `${(turn === "w" ? checked[0] : checked[1]) ?
+          `+`
+          :
+          ``
+        }`
       }`
-      set(notationState,prev => [...prev, newNot])
+    set(notationState, prev => [...prev, newNot])
   }
 })

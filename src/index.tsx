@@ -3,6 +3,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 import App from './App';
 import { GlobalStyle } from './styles/GlobalStyle';
+import { GlobalFonts } from './styles/fonts';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -10,6 +11,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <RecoilRoot>
     <GlobalStyle />
+    <GlobalFonts />
     <BrowserRouter>
       <App />
     </BrowserRouter>

@@ -29,6 +29,8 @@ const ChessPiece = ({ piece, squareIndex }: ChessPieceProps): ReactElement => {
     >
       <PieceImg
         piece={piece}
+        width="100%"
+        height="100%"
       />
     </ChessPieceWrap>
   )

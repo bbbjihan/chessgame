@@ -13,35 +13,41 @@ import wR from "../../img/chesspieces/chessdotcom/wR.png";
 import { ChessPieceIMG } from "./style";
 
 interface PieceImgProps {
-  piece: string;
+  piece: string,
+  width: string,
+  height: string
 }
 
 interface imgMap {
-  [key:string] : string
+  [key: string]: string
 }
 
 const getPieceImgSrc = (piece: string): string => {
-  const chessdotcomImg : imgMap = {
-    "b" : bB,
-    "k" : bK,
-    "n" : bN,
-    "p" : bP,
-    "q" : bQ,
-    "r" : bR,
-    "B" : wB,
-    "K" : wK,
-    "N" : wN,
-    "P" : wP,
-    "Q" : wQ,
-    "R" : wR,
+  const chessdotcomImg: imgMap = {
+    "b": bB,
+    "k": bK,
+    "n": bN,
+    "p": bP,
+    "q": bQ,
+    "r": bR,
+    "B": wB,
+    "K": wK,
+    "N": wN,
+    "P": wP,
+    "Q": wQ,
+    "R": wR,
   }
-  return(
+  return (
     chessdotcomImg[piece] ? chessdotcomImg[piece] : ""
   )
 };
 
-const PieceImg = ({ piece }: PieceImgProps) => {
-  return <ChessPieceIMG src={getPieceImgSrc(piece)} />;
+const PieceImg = ({ piece, width, height }: PieceImgProps) => {
+  return <ChessPieceIMG
+    src={getPieceImgSrc(piece)}
+    width={width}
+    height={height}
+  />;
 };
 
 export default PieceImg;
