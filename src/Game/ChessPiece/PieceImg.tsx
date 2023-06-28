@@ -16,46 +16,32 @@ interface PieceImgProps {
   piece: string;
 }
 
-const PieceImg = ({ piece }: PieceImgProps) => {
-  return <ChessPieceIMG src={getPieceImgSrc(piece)} />;
-};
+interface imgMap {
+  [key:string] : string
+}
 
 const getPieceImgSrc = (piece: string): string => {
-  // 이런 스위치문의 경우 객체 map 을 사용하는것도 좋다고 생각해요
-  // ex)
-  // {
-  //   'b': bB,
-  //   'k': bK,
-  //   ...
-  // }
-  switch (piece) {
-    case "b":
-      return bB;
-    case "k":
-      return bK;
-    case "n":
-      return bN;
-    case "p":
-      return bP;
-    case "q":
-      return bQ;
-    case "r":
-      return bR;
-    case "B":
-      return wB;
-    case "K":
-      return wK;
-    case "N":
-      return wN;
-    case "P":
-      return wP;
-    case "Q":
-      return wQ;
-    case "R":
-      return wR;
-    default:
-      return "";
+  const chessdotcomImg : imgMap = {
+    "b" : bB,
+    "k" : bK,
+    "n" : bN,
+    "p" : bP,
+    "q" : bQ,
+    "r" : bR,
+    "B" : wB,
+    "K" : wK,
+    "N" : wN,
+    "P" : wP,
+    "Q" : wQ,
+    "R" : wR,
   }
+  return(
+    chessdotcomImg[piece] ? chessdotcomImg[piece] : ""
+  )
+};
+
+const PieceImg = ({ piece }: PieceImgProps) => {
+  return <ChessPieceIMG src={getPieceImgSrc(piece)} />;
 };
 
 export default PieceImg;

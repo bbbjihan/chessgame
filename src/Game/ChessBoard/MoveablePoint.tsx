@@ -1,12 +1,13 @@
 import { ReactElement } from "react";
 import { useResetRecoilState, useSetRecoilState } from "recoil";
+import { setCheckedState, setMoveablePointArrState } from "../../utils/checkChecked";
 import { pieceMoveState } from "../../utils/pieceMove";
 import {
   destinationState,
   moveableSquareState,
   movingPieceState,
   movingStartState,
-  turnState,
+  turnState
 } from "../../utils/recoil";
 import { DotWrap, MoveableDot } from "./style";
 
@@ -21,25 +22,24 @@ const MoveablePoint = ({ destination }: MoveablePointProps): ReactElement => {
   const resetMovingPiece = useResetRecoilState(movingPieceState);
   const resetMoveableSqaure = useResetRecoilState(moveableSquareState);
   const resetMovingStart = useResetRecoilState(movingStartState);
+  const resetDestination = useResetRecoilState(destinationState);
 
   const pieceMove = useSetRecoilState(pieceMoveState);
+  const setMoveablePoints = useSetRecoilState(setMoveablePointArrState);
+  const setChecked = useSetRecoilState(setCheckedState);
+
   const onClick = () => {
     setDestination(destination);
     pieceMove();
-
-    setTurn((prev) => {
-      // prev === "w" ? "b" : "w" //여기서는 삼항연산자도 가독성이 좋아보이긴 하네요
-      if (prev === "w") {
-        return "b";
-      } else {
-        return "w";
-      }
-    });
+    setMoveablePoints();
+    setChecked();
+    
+    setTurn((prev) => prev === "w" ? "b" : "w");
 
     resetMoveableSqaure();
     resetMovingPiece();
     resetMovingStart();
-    setDestination("");
+    resetDestination();
   };
 
   return (

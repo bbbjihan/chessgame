@@ -20,19 +20,20 @@ export const Row = styled.div`
   height: 3rem;
 `
 
-export const Square = styled.div`
+interface SquareProps {
+  isDark : boolean,
+}
+
+export const Square = styled.div<SquareProps>`
   float: left;
   position: relative;
   width: 3rem;
   height: 3rem;
-`
-
-export const DarkSquare = styled(Square)`
-  background-color: var(--color-dk);
-`
-
-export const LightSquare = styled(Square)`
-  background-color: var(--color-sh);
+  ${props=>props.isDark ?
+    `background-color: var(--color-dk);`
+    :
+    `background-color: var(--color-sh);`
+  }
 `
 
 export const DotWrap = styled.div`

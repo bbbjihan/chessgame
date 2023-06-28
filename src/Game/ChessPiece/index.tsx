@@ -12,7 +12,7 @@ interface ChessPieceProps {
   col: number
 }
 
-const ChessPiece = ({ piece, squareIndex, row, col }: ChessPieceProps): ReactElement => {
+const ChessPiece = ({ piece, squareIndex }: ChessPieceProps): ReactElement => {
   const setMovingPiece = useSetRecoilState(movingPieceState);
   const setMovingStart = useSetRecoilState(movingStartState);
   const renderMoveablePoint = useSetRecoilState(renderMoveablePointState);

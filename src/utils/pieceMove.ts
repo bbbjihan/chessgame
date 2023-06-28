@@ -1,274 +1,324 @@
 import { selector } from "recoil";
-import { getNumberIndex, getPositionString, getSquareIndex } from "./functions";
+import { getNumberIndex, getPositionString } from "./functions";
 import { destinationState, moveableSquareState, movingPieceState, movingStartState, positionArrState, positionState, turnState } from "./recoil";
 
 export const pieceMoveState = selector<void>({
   key: "pieceMoveState",
-  get: (()=>{}),
-  set: (({get, set}) => {
+  get: (() => { }),
+  set: (({ get, set }) => {
     const positionArr = get(positionArrState);
     const movingStart = get(movingStartState);
     const movingPiece = get(movingPieceState);
     const destination = get(destinationState);
 
-    let result:string[][] = new Array(8).fill("").map(() => new Array(8).fill(""))
-    for(let i = 0; i < 8; i++) for(let j = 0; j < 8; j++) result[i][j] = positionArr[i][j];
-  
-    const [startRow, startCol]:[number, number] = getNumberIndex(movingStart);
-    const [destiRow, destiCol]:[number, number] = getNumberIndex(destination);
+    let result: string[][] = new Array(8).fill("").map(() => new Array(8).fill(""))
+    for (let i = 0; i < 8; i++) for (let j = 0; j < 8; j++) result[i][j] = positionArr[i][j];
+
+    const [startRow, startCol]: [number, number] = getNumberIndex(movingStart);
+    const [destiRow, destiCol]: [number, number] = getNumberIndex(destination);
 
     result[startRow][startCol] = "";
     result[destiRow][destiCol] = movingPiece;
-  
+
     const resultString = getPositionString(result);
-    console.log(`move ${movingPiece} from ${movingStart}(${startRow}/${startCol}) to ${destination}(${destiRow}/${destiCol}), result is ${resultString}.`)
-  
-    set(positionState,resultString);
+    //console.log(`move ${movingPiece} from ${movingStart}(${startRow}/${startCol}) to ${destination}(${destiRow}/${destiCol}), result is ${resultString}.`)
+    set(positionState, resultString);
+
   })
 })
 
 export const renderMoveablePointState = selector<void>({
   key: "renderMoveablePointState",
-  get: (() => {}),
-  set: (({get, set}) => {
-    const isOpponent = (attacker: string, defencer: string): boolean => {
-      if (defencer === "k" || defencer === "K") return false;
-      if (defencer === "") return true;
-      return (attacker === attacker.toUpperCase()) === (defencer !== defencer.toUpperCase());
-    }
-
-    const piece:string = get(movingPieceState);
-    const movingStart:string = get(movingStartState);
-    const [row, col] : [number, number] = getNumberIndex(movingStart);
+  get: (() => { }),
+  set: (({ get, set }) => {
+    const piece: string = get(movingPieceState);
+    const movingStart: string = get(movingStartState);
+    const [row, col]: [number, number] = getNumberIndex(movingStart);
     let moveable = new Array(8).fill(false).map(() => new Array(8).fill(false));
     const position = get(positionArrState);
-    
-    console.log(`The piece "${piece}" is Selected. Index is ${getSquareIndex(row,col)}(${row}/${col})`)
 
-    if((piece === piece.toUpperCase()) !== (get(turnState) === "w")){ //not your turn.
-      set(moveableSquareState,moveable);
+    //console.log(`The piece "${piece}" is Selected. Index is ${getSquareIndex(row, col)}(${row}/${col})`)
+
+    if ((piece === piece.toUpperCase()) !== (get(turnState) === "w")) { //not your turn.
+      set(moveableSquareState, moveable);
       return;
     }
 
-    let [destiRow, destiCol] = [0, 0]
-    switch (piece) {
-
-      case "P": //white pawn movement
-        if (row === 6 && !position[4][col]) moveable[4][col] = true;
-        if (row > 0 && !position[row - 1][col]) moveable[row - 1][col] = true;
-        if (row > 0 && col > 0 && position[row - 1][col - 1] && isOpponent(piece, position[row - 1][col - 1])) moveable[row - 1][col - 1] = true;
-        if (row > 0 && col < 7 && position[row - 1][col + 1] && isOpponent(piece, position[row - 1][col + 1])) moveable[row - 1][col + 1] = true;
-        break;
-
-      case "p": //black pawn movement
-        if (row === 1 && !position[3][col]) moveable[3][col] = true;
-        if (row < 7 && !position[row + 1][col]) moveable[row + 1][col] = true;
-        if (row < 7 && col > 0 && position[row + 1][col - 1] && isOpponent(piece, position[row + 1][col - 1])) moveable[row + 1][col - 1] = true;
-        if (row < 7 && col < 7 && position[row + 1][col + 1] && isOpponent(piece, position[row + 1][col + 1])) moveable[row + 1][col + 1] = true;
-        break;
-
-      case "N":
-      case "n": //night movement
-        if (row > 0) {
-          if (col > 1 && isOpponent(piece, position[row - 1][col - 2])) moveable[row - 1][col - 2] = true;
-          if (col < 6 && isOpponent(piece, position[row - 1][col + 2])) moveable[row - 1][col + 2] = true;
-          if (row > 1) {
-            if (col > 0 && isOpponent(piece, position[row - 2][col - 1])) moveable[row - 2][col - 1] = true;
-            if (col < 7 && isOpponent(piece, position[row - 2][col + 1])) moveable[row - 2][col + 1] = true;
-          }
-        }
-        if (row < 7) {
-          if (col > 1 && isOpponent(piece, position[row + 1][col - 2])) moveable[row + 1][col - 2] = true;
-          if (col < 6 && isOpponent(piece, position[row + 1][col + 2])) moveable[row + 1][col + 2] = true;
-          if (row < 6) {
-            if (col > 0 && isOpponent(piece, position[row + 2][col - 1])) moveable[row + 2][col - 1] = true;
-            if (col < 7 && isOpponent(piece, position[row + 2][col + 1])) moveable[row + 2][col + 1] = true;
-          }
-        }
-        break;
-
-      case "B":
-      case "b": //bishop movement
-        [destiRow, destiCol] = [row - 1, col - 1];
-        while (destiRow >= 0 && destiCol >= 0) {
-          if (position[destiRow][destiCol]) {
-            if (isOpponent(piece, position[destiRow][destiCol])) moveable[destiRow][destiCol] = true;
-            break;
-          }
-          else moveable[destiRow][destiCol] = true;
-          destiRow -= 1;
-          destiCol -= 1;
-        }
-        [destiRow, destiCol] = [row + 1, col + 1];
-        while (destiRow <= 7 && destiCol <= 7) {
-          if (position[destiRow][destiCol]) {
-            if (isOpponent(piece, position[destiRow][destiCol])) moveable[destiRow][destiCol] = true;
-            break;
-          }
-          else moveable[destiRow][destiCol] = true;
-          destiRow += 1;
-          destiCol += 1;
-        }
-        [destiRow, destiCol] = [row - 1, col + 1];
-        while (destiRow >= 0 && destiCol <= 7) {
-          if (position[destiRow][destiCol]) {
-            if (isOpponent(piece, position[destiRow][destiCol])) moveable[destiRow][destiCol] = true;
-            break;
-          }
-          else moveable[destiRow][destiCol] = true;
-          destiRow -= 1;
-          destiCol += 1;
-        }
-        [destiRow, destiCol] = [row + 1, col - 1];
-        while (destiRow <= 7 && destiCol >= 0) {
-          if (position[destiRow][destiCol]) {
-            if (isOpponent(piece, position[destiRow][destiCol])) moveable[destiRow][destiCol] = true;
-            break;
-          }
-          else moveable[destiRow][destiCol] = true;
-          destiRow += 1;
-          destiCol -= 1;
-        }
-        break;
-
-      case "R":
-      case "r": //rook movement
-        console.log("ROOK");
-        [destiRow, destiCol] = [row - 1, col];
-        while (destiRow >= 0) {
-          if (position[destiRow][destiCol]) {
-            if (isOpponent(piece, position[destiRow][destiCol])) moveable[destiRow][destiCol] = true;
-            break;
-          }
-          else moveable[destiRow][destiCol] = true;
-          destiRow -= 1;
-        }
-        [destiRow, destiCol] = [row, col - 1];
-        while (destiCol >= 0) {
-          if (position[destiRow][destiCol]) {
-            if (isOpponent(piece, position[destiRow][destiCol])) moveable[destiRow][destiCol] = true;
-            break;
-          }
-          else moveable[destiRow][destiCol] = true;
-          destiCol -= 1;
-        }
-        [destiRow, destiCol] = [row + 1, col];
-        while (destiRow <= 7) {
-          if (position[destiRow][destiCol]) {
-            if (isOpponent(piece, position[destiRow][destiCol])) moveable[destiRow][destiCol] = true;
-            break;
-          }
-          else moveable[destiRow][destiCol] = true;
-          destiRow += 1;
-        }
-        [destiRow, destiCol] = [row, col + 1];
-        while (destiCol <= 7) {
-          if (position[destiRow][destiCol]) {
-            if (isOpponent(piece, position[destiRow][destiCol])) moveable[destiRow][destiCol] = true;
-            break;
-          }
-          else moveable[destiRow][destiCol] = true;
-          destiCol += 1;
-        }
-        break;
-        
-      case "Q":
-      case "q": //queen movement
-        [destiRow, destiCol] = [row - 1, col - 1];
-        while (destiRow >= 0 && destiCol >= 0) {
-          if (position[destiRow][destiCol]) {
-            if (isOpponent(piece, position[destiRow][destiCol])) moveable[destiRow][destiCol] = true;
-            break;
-          }
-          else moveable[destiRow][destiCol] = true;
-          destiRow -= 1;
-          destiCol -= 1;
-        }
-        [destiRow, destiCol] = [row + 1, col + 1];
-        while (destiRow <= 7 && destiCol <= 7) {
-          if (position[destiRow][destiCol]) {
-            if (isOpponent(piece, position[destiRow][destiCol])) moveable[destiRow][destiCol] = true;
-            break;
-          }
-          else moveable[destiRow][destiCol] = true;
-          destiRow += 1;
-          destiCol += 1;
-        }
-        [destiRow, destiCol] = [row - 1, col + 1];
-        while (destiRow >= 0 && destiCol <= 7) {
-          if (position[destiRow][destiCol]) {
-            if (isOpponent(piece, position[destiRow][destiCol])) moveable[destiRow][destiCol] = true;
-            break;
-          }
-          else moveable[destiRow][destiCol] = true;
-          destiRow -= 1;
-          destiCol += 1;
-        }
-        [destiRow, destiCol] = [row + 1, col - 1];
-        while (destiRow <= 7 && destiCol >= 0) {
-          if (position[destiRow][destiCol]) {
-            if (isOpponent(piece, position[destiRow][destiCol])) moveable[destiRow][destiCol] = true;
-            break;
-          }
-          else moveable[destiRow][destiCol] = true;
-          destiRow += 1;
-          destiCol -= 1;
-        }
-        [destiRow, destiCol] = [row - 1, col];
-        while (destiRow >= 0) {
-          if (position[destiRow][destiCol]) {
-            if (isOpponent(piece, position[destiRow][destiCol])) moveable[destiRow][destiCol] = true;
-            break;
-          }
-          else moveable[destiRow][destiCol] = true;
-          destiRow -= 1;
-        }
-        [destiRow, destiCol] = [row, col - 1];
-        while (destiCol >= 0) {
-          if (position[destiRow][destiCol]) {
-            if (isOpponent(piece, position[destiRow][destiCol])) moveable[destiRow][destiCol] = true;
-            break;
-          }
-          else moveable[destiRow][destiCol] = true;
-          destiCol -= 1;
-        }
-        [destiRow, destiCol] = [row + 1, col];
-        while (destiRow <= 7) {
-          if (position[destiRow][destiCol]) {
-            if (isOpponent(piece, position[destiRow][destiCol])) moveable[destiRow][destiCol] = true;
-            break;
-          }
-          else moveable[destiRow][destiCol] = true;
-          destiRow += 1;
-        }
-        [destiRow, destiCol] = [row, col + 1];
-        while (destiCol <= 7) {
-          if (position[destiRow][destiCol]) {
-            if (isOpponent(piece, position[destiRow][destiCol])) moveable[destiRow][destiCol] = true;
-            break;
-          }
-          else moveable[destiRow][destiCol] = true;
-          destiCol += 1;
-        }
-        break;
-      case "K":
-      case "k": //king movement
-        if(row > 0){
-          if (col > 0 && isOpponent(piece, position[row-1][col-1])) moveable[row-1][col-1] = true;
-          if (col < 7 && isOpponent(piece, position[row-1][col+1])) moveable[row-1][col+1] = true;
-          if(isOpponent(piece, position[row-1][col]))moveable[row-1][col] = true;
-        }
-        if(row < 7){
-          if (col > 0 && isOpponent(piece, position[row+1][col-1])) moveable[row+1][col-1] = true;
-          if (col < 7 && isOpponent(piece, position[row+1][col+1])) moveable[row+1][col+1] = true;
-          if(isOpponent(piece, position[row+1][col]))moveable[row+1][col] = true;
-        }
-        if (col > 0 && isOpponent(piece, position[row][col-1])) moveable[row][col-1] = true;
-        if (col < 7 && isOpponent(piece, position[row][col+1])) moveable[row][col+1] = true;
-        break;
-      default:
-        break;
-    }
-    set(moveableSquareState,moveable);
+    getPieceMoveablePointToArr(piece, row, col, position, moveable);
+    set(moveableSquareState, moveable);
   })
 })
+
+const isOpponent = (attacker: string, defencer: string): boolean => {
+  if (defencer === "") return true;
+  return (attacker === attacker.toUpperCase()) === (defencer !== defencer.toUpperCase());
+}
+
+/**
+*기물이 움직인 이후에 킹이 위협받는지 시뮬레이션 해줌. getPieceMoveablePointToArr에서 각 기물 움직임 로직과 아군 기물에 가로막히는 건 이미 필터링되었음.
+*/
+export const movementSimulation = (
+  piece: string,
+  startRow: number,
+  startCol: number,
+  destiRow: number,
+  destiCol: number,
+  position: string[][],
+  player: string
+): boolean => {
+  let kingPosition: number[] = [-1, -1];
+  let positionAfterMove: string[][] = new Array(8).fill("").map(() => new Array(8).fill(""));
+  let enemyMoveablePoints: boolean[][] = new Array(8).fill(false).map(() => new Array(8).fill(false));
+
+  for (let i = 0; i < 8; i++) {
+    for (let j = 0; j < 8; j++) {
+      positionAfterMove[i][j] = position[i][j];
+    }
+  }
+
+  positionAfterMove[startRow][startCol] = "";
+  positionAfterMove[destiRow][destiCol] = piece;
+
+  for (let i: number = 0; i < 8; i++) {
+    for (let j: number = 0; j < 8; j++) {
+      const nowPiece: string = positionAfterMove[i][j]
+      if (player === "w") {
+        if (nowPiece !== nowPiece.toUpperCase()) getPieceMoveablePointToArr(nowPiece, i, j, positionAfterMove, enemyMoveablePoints, true);
+        if (nowPiece === "K") {
+          kingPosition[0] = i;
+          kingPosition[1] = j;
+        };
+      } else if (player === "b") {
+        if (nowPiece === nowPiece.toUpperCase()) getPieceMoveablePointToArr(nowPiece, i, j, positionAfterMove, enemyMoveablePoints, true);
+        if (nowPiece === "k") {
+          kingPosition[0] = i;
+          kingPosition[1] = j;
+        };
+      };
+    }
+  }
+
+  if (kingPosition[0] === -1 || kingPosition[1] === -1) return true;
+  return !enemyMoveablePoints[kingPosition[0]][kingPosition[1]]
+}
+
+export const getPieceMoveablePointToArr = (piece: string, row: number, col: number, position: string[][], moveable: boolean[][], isSimulation: boolean = false): void => {
+  let [destiRow, destiCol] = [0, 0]
+  const player = piece === piece.toUpperCase() ? "w" : "b";
+  switch (piece) {
+    case "P": //white pawn movement
+      if (row === 6 && !position[4][col] && (!isSimulation ? movementSimulation(piece, row, col, 4, col, position, player) : true)) moveable[4][col] = true;
+      if (row > 0 && !position[row - 1][col] && (!isSimulation ? movementSimulation(piece, row, col, row - 1, col, position, player) : true)) moveable[row - 1][col] = true;
+      if (row > 0 && col > 0 && position[row - 1][col - 1] && isOpponent(piece, position[row - 1][col - 1]) && (!isSimulation ? movementSimulation(piece, row, col, row - 1, col - 1, position, player) : true)) moveable[row - 1][col - 1] = true;
+      if (row > 0 && col < 7 && position[row - 1][col + 1] && isOpponent(piece, position[row - 1][col + 1]) && (!isSimulation ? movementSimulation(piece, row, col, row - 1, col + 1, position, player) : true)) moveable[row - 1][col + 1] = true;
+      break;
+
+    case "p": //black pawn movement
+      if (row === 1 && !position[3][col] && (!isSimulation ? movementSimulation(piece, row, col, 3, col, position, player) : true)) moveable[3][col] = true;
+      if (row < 7 && !position[row + 1][col] && (!isSimulation ? movementSimulation(piece, row, col, row + 1, col, position, player) : true)) moveable[row + 1][col] = true;
+      if (row < 7 && col > 0 && position[row + 1][col - 1] && isOpponent(piece, position[row + 1][col - 1]) && (!isSimulation ? movementSimulation(piece, row, col, row + 1, col - 1, position, player) : true)) moveable[row + 1][col - 1] = true;
+      if (row < 7 && col < 7 && position[row + 1][col + 1] && isOpponent(piece, position[row + 1][col + 1]) && (!isSimulation ? movementSimulation(piece, row, col, row + 1, col + 1, position, player) : true)) moveable[row + 1][col + 1] = true;
+      break;
+
+    case "N":
+    case "n": //night movement
+      if (row > 0) {
+        if (col > 1 && isOpponent(piece, position[row - 1][col - 2]) && (!isSimulation ? movementSimulation(piece, row, col, row - 1, col - 2, position, player) : true)) moveable[row - 1][col - 2] = true;
+        if (col < 6 && isOpponent(piece, position[row - 1][col + 2]) && (!isSimulation ? movementSimulation(piece, row, col, row - 1, col + 2, position, player) : true)) moveable[row - 1][col + 2] = true;
+        if (row > 1) {
+          if (col > 0 && isOpponent(piece, position[row - 2][col - 1]) && (!isSimulation ? movementSimulation(piece, row, col, row - 2, col - 1, position, player) : true)) moveable[row - 2][col - 1] = true;
+          if (col < 7 && isOpponent(piece, position[row - 2][col + 1]) && (!isSimulation ? movementSimulation(piece, row, col, row - 2, col + 1, position, player) : true)) moveable[row - 2][col + 1] = true;
+        }
+      }
+      if (row < 7) {
+        if (col > 1 && isOpponent(piece, position[row + 1][col - 2]) && (!isSimulation ? movementSimulation(piece, row, col, row + 1, col - 2, position, player) : true)) moveable[row + 1][col - 2] = true;
+        if (col < 6 && isOpponent(piece, position[row + 1][col + 2]) && (!isSimulation ? movementSimulation(piece, row, col, row + 1, col + 2, position, player) : true)) moveable[row + 1][col + 2] = true;
+        if (row < 6) {
+          if (col > 0 && isOpponent(piece, position[row + 2][col - 1]) && (!isSimulation ? movementSimulation(piece, row, col, row + 2, col - 1, position, player) : true)) moveable[row + 2][col - 1] = true;
+          if (col < 7 && isOpponent(piece, position[row + 2][col + 1]) && (!isSimulation ? movementSimulation(piece, row, col, row + 2, col + 1, position, player) : true)) moveable[row + 2][col + 1] = true;
+        }
+      }
+      break;
+
+    case "B":
+    case "b": //bishop movement
+      [destiRow, destiCol] = [row - 1, col - 1];
+      while (destiRow >= 0 && destiCol >= 0) {
+        if (position[destiRow][destiCol]) {
+          if (isOpponent(piece, position[destiRow][destiCol]) && (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true)) moveable[destiRow][destiCol] = true;
+          break;
+        }
+        else if (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true) moveable[destiRow][destiCol] = true;
+        destiRow -= 1;
+        destiCol -= 1;
+      }
+      [destiRow, destiCol] = [row + 1, col + 1];
+      while (destiRow <= 7 && destiCol <= 7) {
+        if (position[destiRow][destiCol]) {
+          if (isOpponent(piece, position[destiRow][destiCol]) && (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true)) moveable[destiRow][destiCol] = true;
+          break;
+        }
+        else if (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true) moveable[destiRow][destiCol] = true;
+        destiRow += 1;
+        destiCol += 1;
+      }
+      [destiRow, destiCol] = [row - 1, col + 1];
+      while (destiRow >= 0 && destiCol <= 7) {
+        if (position[destiRow][destiCol]) {
+          if (isOpponent(piece, position[destiRow][destiCol]) && (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true)) moveable[destiRow][destiCol] = true;
+          break;
+        }
+        else if (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true) moveable[destiRow][destiCol] = true;
+        destiRow -= 1;
+        destiCol += 1;
+      }
+      [destiRow, destiCol] = [row + 1, col - 1];
+      while (destiRow <= 7 && destiCol >= 0) {
+        if (position[destiRow][destiCol]) {
+          if (isOpponent(piece, position[destiRow][destiCol]) && (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true)) moveable[destiRow][destiCol] = true;
+          break;
+        }
+        else if (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true) moveable[destiRow][destiCol] = true;
+        destiRow += 1;
+        destiCol -= 1;
+      }
+      break;
+
+    case "R":
+    case "r": //rook movement
+      [destiRow, destiCol] = [row - 1, col];
+      while (destiRow >= 0) {
+        if (position[destiRow][destiCol]) {
+          if (isOpponent(piece, position[destiRow][destiCol]) && (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true)) moveable[destiRow][destiCol] = true;
+          break;
+        }
+        else if (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true) moveable[destiRow][destiCol] = true;
+        destiRow -= 1;
+      }
+      [destiRow, destiCol] = [row, col - 1];
+      while (destiCol >= 0) {
+        if (position[destiRow][destiCol]) {
+          if (isOpponent(piece, position[destiRow][destiCol]) && (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true)) moveable[destiRow][destiCol] = true;
+          break;
+        }
+        else if (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true) moveable[destiRow][destiCol] = true;
+        destiCol -= 1;
+      }
+      [destiRow, destiCol] = [row + 1, col];
+      while (destiRow <= 7) {
+        if (position[destiRow][destiCol]) {
+          if (isOpponent(piece, position[destiRow][destiCol]) && (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true)) moveable[destiRow][destiCol] = true;
+          break;
+        }
+        else if (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true) moveable[destiRow][destiCol] = true;
+        destiRow += 1;
+      }
+      [destiRow, destiCol] = [row, col + 1];
+      while (destiCol <= 7) {
+        if (position[destiRow][destiCol]) {
+          if (isOpponent(piece, position[destiRow][destiCol]) && (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true)) moveable[destiRow][destiCol] = true;
+          break;
+        }
+        else if (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true) moveable[destiRow][destiCol] = true;
+        destiCol += 1;
+      }
+      break;
+
+    case "Q":
+    case "q": //queen movement
+      [destiRow, destiCol] = [row - 1, col - 1];
+      while (destiRow >= 0 && destiCol >= 0) {
+        if (position[destiRow][destiCol]) {
+          if (isOpponent(piece, position[destiRow][destiCol]) && (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true)) moveable[destiRow][destiCol] = true;
+          break;
+        }
+        else if (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true) moveable[destiRow][destiCol] = true;
+        destiRow -= 1;
+        destiCol -= 1;
+      }
+      [destiRow, destiCol] = [row + 1, col + 1];
+      while (destiRow <= 7 && destiCol <= 7) {
+        if (position[destiRow][destiCol]) {
+          if (isOpponent(piece, position[destiRow][destiCol]) && (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true)) moveable[destiRow][destiCol] = true;
+          break;
+        }
+        else if (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true) moveable[destiRow][destiCol] = true;
+        destiRow += 1;
+        destiCol += 1;
+      }
+      [destiRow, destiCol] = [row - 1, col + 1];
+      while (destiRow >= 0 && destiCol <= 7) {
+        if (position[destiRow][destiCol]) {
+          if (isOpponent(piece, position[destiRow][destiCol]) && (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true)) moveable[destiRow][destiCol] = true;
+          break;
+        }
+        else if (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true) moveable[destiRow][destiCol] = true;
+        destiRow -= 1;
+        destiCol += 1;
+      }
+      [destiRow, destiCol] = [row + 1, col - 1];
+      while (destiRow <= 7 && destiCol >= 0) {
+        if (position[destiRow][destiCol]) {
+          if (isOpponent(piece, position[destiRow][destiCol]) && (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true)) moveable[destiRow][destiCol] = true;
+          break;
+        }
+        else if (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true) moveable[destiRow][destiCol] = true;
+        destiRow += 1;
+        destiCol -= 1;
+      }
+      [destiRow, destiCol] = [row - 1, col];
+      while (destiRow >= 0) {
+        if (position[destiRow][destiCol]) {
+          if (isOpponent(piece, position[destiRow][destiCol]) && (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true)) moveable[destiRow][destiCol] = true;
+          break;
+        }
+        else if (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true) moveable[destiRow][destiCol] = true;
+        destiRow -= 1;
+      }
+      [destiRow, destiCol] = [row, col - 1];
+      while (destiCol >= 0) {
+        if (position[destiRow][destiCol]) {
+          if (isOpponent(piece, position[destiRow][destiCol]) && (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true)) moveable[destiRow][destiCol] = true;
+          break;
+        }
+        else if (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true) moveable[destiRow][destiCol] = true;
+        destiCol -= 1;
+      }
+      [destiRow, destiCol] = [row + 1, col];
+      while (destiRow <= 7) {
+        if (position[destiRow][destiCol]) {
+          if (isOpponent(piece, position[destiRow][destiCol]) && (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true)) moveable[destiRow][destiCol] = true;
+          break;
+        }
+        else if (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true) moveable[destiRow][destiCol] = true;
+        destiRow += 1;
+      }
+      [destiRow, destiCol] = [row, col + 1];
+      while (destiCol <= 7) {
+        if (position[destiRow][destiCol]) {
+          if (isOpponent(piece, position[destiRow][destiCol]) && (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true)) moveable[destiRow][destiCol] = true;
+          break;
+        }
+        else if (!isSimulation ? movementSimulation(piece, row, col, destiRow, destiCol, position, player) : true) moveable[destiRow][destiCol] = true;
+        destiCol += 1;
+      }
+      break;
+    case "K":
+    case "k": //king movement
+      if (row > 0) {
+        if (col > 0 && isOpponent(piece, position[row - 1][col - 1]) && (!isSimulation ? movementSimulation(piece, row, col, row - 1, col - 1, position, player) : true)) moveable[row - 1][col - 1] = true;
+        if (col < 7 && isOpponent(piece, position[row - 1][col + 1]) && (!isSimulation ? movementSimulation(piece, row, col, row - 1, col + 1, position, player) : true)) moveable[row - 1][col + 1] = true;
+        if (isOpponent(piece, position[row - 1][col]) && (!isSimulation ? movementSimulation(piece, row, col, row - 1, col, position, player) : true)) moveable[row - 1][col] = true;
+      }
+      if (row < 7) {
+        if (col > 0 && isOpponent(piece, position[row + 1][col - 1]) && (!isSimulation ? movementSimulation(piece, row, col, row + 1, col - 1, position, player) : true)) moveable[row + 1][col - 1] = true;
+        if (col < 7 && isOpponent(piece, position[row + 1][col + 1]) && (!isSimulation ? movementSimulation(piece, row, col, row + 1, col + 1, position, player) : true)) moveable[row + 1][col + 1] = true;
+        if (isOpponent(piece, position[row + 1][col]) && (!isSimulation ? movementSimulation(piece, row, col, row + 1, col, position, player) : true)) moveable[row + 1][col] = true;
+      }
+      if (col > 0 && isOpponent(piece, position[row][col - 1]) && (!isSimulation ? movementSimulation(piece, row, col, row, col - 1, position, player) : true)) moveable[row][col - 1] = true;
+      if (col < 7 && isOpponent(piece, position[row][col + 1]) && (!isSimulation ? movementSimulation(piece, row, col, row, col + 1, position, player) : true)) moveable[row][col + 1] = true;
+      break;
+    default:
+      break;
+  }
+}
