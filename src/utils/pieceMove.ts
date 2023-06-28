@@ -4,7 +4,7 @@ import { destinationState, moveableSquareState, movingPieceState, movingStartSta
 
 export const pieceMoveState = selector<void>({
   key: "pieceMoveState",
-  get: (() => { }),
+  get: () => {},
   set: (({ get, set }) => {
     const positionArr = get(positionArrState);
     const movingStart = get(movingStartState);
@@ -29,7 +29,7 @@ export const pieceMoveState = selector<void>({
 
 export const renderMoveablePointState = selector<void>({
   key: "renderMoveablePointState",
-  get: (() => { }),
+  get: () => {},
   set: (({ get, set }) => {
     const piece: string = get(movingPieceState);
     const movingStart: string = get(movingStartState);

@@ -1,6 +1,7 @@
 import { ReactElement } from "react";
 import { useResetRecoilState, useSetRecoilState } from "recoil";
 import { setCheckedState, setMoveablePointArrState } from "../../utils/checkChecked";
+import { setNotationState } from "../../utils/notation";
 import { pieceMoveState } from "../../utils/pieceMove";
 import {
   destinationState,
@@ -27,14 +28,18 @@ const MoveablePoint = ({ destination }: MoveablePointProps): ReactElement => {
   const pieceMove = useSetRecoilState(pieceMoveState);
   const setMoveablePoints = useSetRecoilState(setMoveablePointArrState);
   const setChecked = useSetRecoilState(setCheckedState);
+  const setNotation = useSetRecoilState(setNotationState);
 
   const onClick = () => {
     setDestination(destination);
+
     pieceMove();
-    setMoveablePoints();
-    setChecked();
     
     setTurn((prev) => prev === "w" ? "b" : "w");
+
+    setMoveablePoints();
+    setChecked();
+    setNotation();
 
     resetMoveableSqaure();
     resetMovingPiece();

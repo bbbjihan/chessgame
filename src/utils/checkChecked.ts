@@ -1,10 +1,20 @@
 import { atom, selector } from "recoil";
 import { getPieceMoveablePointToArr } from "./pieceMove";
-import { positionArrState } from "./recoil";
+import { positionArrState, turnState } from "./recoil";
 
 export const checkedState = atom<boolean[]>({
   key: "checkedState",
   default: [false, false]
+})
+
+export const checkMatedState = atom<boolean[]>({
+  key: "checkMatedState",
+  default: [false, false]
+})
+
+export const staleMatedState = atom<boolean>({
+  key: "staleMatedState",
+  default: false
 })
 
 export const whiteWholeMoveablePointArrState = atom({
@@ -33,16 +43,19 @@ export const setMoveablePointArrState = selector({
 
     for (let i = 0; i < 8; i++) {
       for (let j = 0; j < 8; j++) {
-          if (position[i][j] === position[i][j].toUpperCase()) getPieceMoveablePointToArr(position[i][j], i, j, position, whiteMoveable);
-          if (position[i][j] !== position[i][j].toUpperCase()) getPieceMoveablePointToArr(position[i][j], i, j, position, blackMoveable);
+        if (position[i][j] === position[i][j].toUpperCase()) getPieceMoveablePointToArr(position[i][j], i, j, position, whiteMoveable);
+        if (position[i][j] !== position[i][j].toUpperCase()) getPieceMoveablePointToArr(position[i][j], i, j, position, blackMoveable);
       }
     }
 
-      set(whiteWholeMoveablePointArrState, whiteMoveable);
-      set(blackWholeMoveablePointArrState, blackMoveable);
+    set(whiteWholeMoveablePointArrState, whiteMoveable);
+    set(blackWholeMoveablePointArrState, blackMoveable);
   })
 })
 
+/**
+ * 기물 이동 후 갱신된 각 플레이어들의 moveable State를 통해 킹이 위협받고 있는지와 기물을 움직일 수 있는지 확인. 체크와 메이트 여부 갱신
+ */
 export const setCheckedState = selector({
   key: "setCheckedState",
   get: () => { },
@@ -50,16 +63,48 @@ export const setCheckedState = selector({
     const position: string[][] = get(positionArrState);
     const whiteMoveable: boolean[][] = get(whiteWholeMoveablePointArrState);
     const blackMoveable: boolean[][] = get(blackWholeMoveablePointArrState);
+    const turn: string = get(turnState);
 
     let whiteKingPosition: [number, number] = [-1, -1];
     let blackKingPosition: [number, number] = [-1, -1];
+    let whiteCntMoveable = 0;
+    let blackCntMoveable = 0;
 
-    for(let i = 0; i < 8; i++){
-      for(let j = 0; j < 8; j++){
+    for (let i = 0; i < 8; i++) {
+      for (let j = 0; j < 8; j++) {
         if (position[i][j] === "K") whiteKingPosition = [i, j];
         if (position[i][j] === "k") blackKingPosition = [i, j];
+        if (whiteMoveable[i][j]) whiteCntMoveable += 1;
+        if (blackMoveable[i][j]) blackCntMoveable += 1;
       }
     }
-    set(checkedState, [blackMoveable[whiteKingPosition[0]][whiteKingPosition[1]], whiteMoveable[blackKingPosition[0]][blackKingPosition[1]]]);
+
+    const whiteChecked = blackMoveable[whiteKingPosition[0]][whiteKingPosition[1]];
+    const blackChecked = whiteMoveable[blackKingPosition[0]][blackKingPosition[1]];
+    set(checkedState, [whiteChecked, blackChecked]);
+
+    let whiteCheckmated = false;
+    let blackCheckmated = false;
+    let staleMated = false;
+    if(turn === "w"){
+      if(!whiteCntMoveable){
+        if(whiteChecked){
+          whiteCheckmated = true;
+        }else{
+          staleMated = true;
+        }
+      }
+    }else{
+      if(!blackCntMoveable){
+        if(blackChecked){
+          blackCheckmated = true;
+        }else{
+          staleMated = true;
+        }
+      }
+    }
+
+    set(checkMatedState, [whiteCheckmated, blackCheckmated]);
+    set(staleMatedState, staleMated)
   })
 })

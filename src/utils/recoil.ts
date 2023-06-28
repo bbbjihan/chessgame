@@ -16,8 +16,10 @@ export const FENState = selector<string>({
 
 export const positionState = atom<string>({
   key: "positionState",
-  default: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+  default: "8/8/8/8/8/5K2/Q7/7k"
 })
+//기본 시작 포지션"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+//스테일메이트 테스트용 포지션 "8/8/8/8/8/5K2/Q7/5k2"
 
 export const positionArrState = selector<string[][]>({
   key: "positionArrState",
@@ -102,6 +104,14 @@ export const turnState = atom<string>({
 export const castleState = atom<string>({
   key: "castleState",
   default: "KQkq"
+})
+
+export const setCastleState = selector({
+  key: "setCastleState",
+  get: () => {},
+  set: ({get, set}) => {
+    
+  }
 })
 
 export const enPassantState = atom<string>({
