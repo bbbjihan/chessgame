@@ -106,14 +106,6 @@ export const castleState = atom<string>({
   default: "KQkq"
 })
 
-export const setCastleState = selector({
-  key: "setCastleState",
-  get: () => {},
-  set: ({get, set}) => {
-    
-  }
-})
-
 export const enPassantState = atom<string>({
   key: "enPassantState",
   default: "-"
