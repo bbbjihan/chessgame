@@ -1,5 +1,5 @@
 import { selector } from "recoil";
-import { getNumberIndex, getPositionString } from "./functions";
+import { capturedPiecesSort, getNumberIndex, getPositionString } from "./functions";
 import { blackCapturedPiecesState, capturedState, castleState, destinationState, enPassantState, fullMoveState, halfMoveState, moveableSquareState, movingPieceState, movingStartState, positionArrState, positionState, turnState, whiteCapturedPiecesState } from "./recoil";
 
 export const pieceMoveState = selector<void>({
@@ -62,10 +62,10 @@ export const pieceMoveState = selector<void>({
     if(target !== ""){
       if(target === target.toUpperCase()){
         const whiteCapturedPieces = get(whiteCapturedPiecesState);
-        set(whiteCapturedPiecesState, [...whiteCapturedPieces, target])
+        set(whiteCapturedPiecesState, capturedPiecesSort([...whiteCapturedPieces, target]))
       }else{
         const blackCapturedPieces = get(blackCapturedPiecesState);
-        set(blackCapturedPiecesState, [...blackCapturedPieces, target])
+        set(blackCapturedPiecesState, capturedPiecesSort([...blackCapturedPieces, target]))
       }
       set(halfMoveState, 0);
       set(capturedState, true);
@@ -76,11 +76,14 @@ export const pieceMoveState = selector<void>({
     //handle enpassant(capture)
     if(destination === enpassant){
       const enpassantIndex = getNumberIndex(enpassant);
+      const whiteCapturedPieces = get(whiteCapturedPiecesState);
       if(movingPiece === "P"){
         result[enpassantIndex[0] + 1][enpassantIndex[1]] = "";
+        set(whiteCapturedPiecesState, capturedPiecesSort([...whiteCapturedPieces, "p"]))
         set(capturedState, true);
       }else if(movingPiece === "p"){
         result[enpassantIndex[0] - 1][enpassantIndex[1]] = "";
+        set(whiteCapturedPiecesState, capturedPiecesSort([...whiteCapturedPieces, "P"]))
         set(capturedState, true);
       }
     }

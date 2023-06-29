@@ -26,3 +26,23 @@ export const getPositionString = (positionArr:string[][]): string => {
   })
   return positionString
 }
+
+export const capturedPiecesSort = (capturedPieces:string[]):string[] => {
+  const sortValue : {
+    [key:string] : number
+  } = {
+    "Q": 0,
+    "R": 1,
+    "B": 2,
+    "N": 3,
+    "P": 4,
+    "q": 5,
+    "r": 6,
+    "b": 7,
+    "n": 8,
+    "p": 9
+  }
+  return(capturedPieces.sort((a, b) => {
+    return sortValue[a] - sortValue[b];
+  }))
+}
