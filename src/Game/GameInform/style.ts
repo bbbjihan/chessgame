@@ -119,5 +119,6 @@ export const Bottom = styled.div`
 
 export const ForMaxWidth = styled.div`
   height: 0;
-  color: rgba(0,0,0,0)
+  color: rgba(0,0,0,0);
+  user-select: none;
 `

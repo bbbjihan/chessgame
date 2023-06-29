@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const ChessPieceWrap = styled.div`
-
+  width: 100%;
 `
 
 interface ChessPieceIMGProps{

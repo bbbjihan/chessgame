@@ -1,5 +1,5 @@
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { checkMatedState, checkedState, staleMatedState } from "../../utils/checkChecked";
+import { checkMatedState, checkedState, drawState } from "../../utils/checkChecked";
 import { notationState } from "../../utils/notation";
 import { rotateState, turnState } from "../../utils/recoil";
 import { Bottom, ForMaxWidth, GameInformWrap, GameStateRow, Middle, NotationBlack, NotationNum, NotationRow, NotationWhite, NotationWrap, RotateButton, RotateButtonWrap, TimeMachineRow, Top, TopLeft, TopRight } from "./style";
@@ -35,7 +35,7 @@ const RenderNotation = () => {
 const GameState = () => {
   const checked = useRecoilValue(checkedState);
   const checkMated = useRecoilValue(checkMatedState);
-  const staleMated = useRecoilValue(staleMatedState);
+  const isDraw = useRecoilValue(drawState);
   const turn = useRecoilValue(turnState);
   if (checkMated[0]) {
     return (
@@ -65,7 +65,7 @@ const GameState = () => {
         </GameStateRow>
       </TopLeft>
     )
-  } else if (staleMated) {
+  } else if (isDraw) {
     return (
       <TopLeft>
         <GameStateRow>

@@ -54,5 +54,24 @@ export const GameInformWrap = styled.div`
 `
 
 export const BottomGameInform = styled.div`
-  height: 3rem
+  width: 100%;
+  background-color:var(--color-wdbl);
+  color: var(--color-sh);
+  text-align: center;
+  ${responsive('large')}{
+    margin-top: 0.5rem;
+    width: 51rem;
+  }
+`
+
+export const BottomRow = styled.div`
+  width: 100%;
+  word-wrap: break-word;
+  min-height: 2rem;
+  line-height: 2rem;
+  ${responsive('large')}{
+    min-height: 1.5rem;
+    line-height: 1.5rem;
+    font-size: var(--font-size-sm);
+  }
 `

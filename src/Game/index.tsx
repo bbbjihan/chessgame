@@ -3,7 +3,7 @@ import { FENState, blackCapturedPiecesState, pieceScoreState, rotateState, white
 import ChessBoard from "./ChessBoard";
 import GameInform from "./GameInform";
 import PlayerCard from "./PlayerCard";
-import { BottomGameInform, ChessBoardWrap, GameInformWrap, PageContent, PageWrap, PlayerAndBoard, PlayerCardWrap } from "./style";
+import { BottomGameInform, BottomRow, ChessBoardWrap, GameInformWrap, PageContent, PageWrap, PlayerAndBoard, PlayerCardWrap } from "./style";
 
 const Game = () => {
   const FEN = useRecoilValue(FENState);
@@ -19,12 +19,12 @@ const Game = () => {
         >
           <PlayerCardWrap>
             <PlayerCard
-              ID="지한짱"
+              ID="BlackPlayer"
               rating={2200}
               title="GM"
               color="b"
               capturedPieces={whiteCapturedPieces}
-              pieceScore={pieceScore[2]}
+              pieceScore={- pieceScore[2]}
               state="normal"
             />
           </PlayerCardWrap>
@@ -33,22 +33,24 @@ const Game = () => {
           </ChessBoardWrap>
           <PlayerCardWrap>
             <PlayerCard
-              ID="시연짱"
+              ID="WhitePlayer"
               rating={1800}
               title="IM"
               color="w"
               capturedPieces={blackCapturedPieces}
-              pieceScore={- pieceScore[2]}
+              pieceScore={pieceScore[2]}
               state="normal"
             />
           </PlayerCardWrap>
         </PlayerAndBoard>
         <GameInformWrap>
-          <GameInform/>
+          <GameInform />
         </GameInformWrap>
       </PageContent>
       <BottomGameInform>
-        FEN: {FEN} <br />
+        <BottomRow>
+          FEN: {FEN}
+        </BottomRow>
       </BottomGameInform>
     </PageWrap>
   )

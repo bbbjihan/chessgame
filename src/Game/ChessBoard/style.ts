@@ -24,8 +24,12 @@ export const Board = styled.div<BoardProps>`
   display:flex;
   flex-direction:${props => props.rotate ? `column-reverse` : `column`};
   box-sizing: content-box;
-  width: 100%;
-  height: 100%;
+  width: 36rem;
+  height: 36rem;
+  ${responsive('small')}{
+    width: 100vw;
+    height: 100%;
+  }
 `
 
 export const Row = styled.div`
@@ -37,6 +41,7 @@ export const Square = styled.div<SquareProps>`
   float: left;
   position: relative;
   width: 12.5%;
+  height: 100%;
   padding-bottom: 12.5%;
   height: 0;
   ${props=>props.isDark ?

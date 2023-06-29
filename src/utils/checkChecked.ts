@@ -1,6 +1,6 @@
 import { atom, selector } from "recoil";
 import { getPieceMoveablePointToArr } from "./pieceMove";
-import { positionArrState, turnState } from "./recoil";
+import { castleState, enPassantState, positionArrState, turnState } from "./recoil";
 
 export const checkedState = atom<boolean[]>({
   key: "checkedState",
@@ -12,8 +12,8 @@ export const checkMatedState = atom<boolean[]>({
   default: [false, false]
 })
 
-export const staleMatedState = atom<boolean>({
-  key: "staleMatedState",
+export const drawState = atom<boolean>({
+  key: "drawState",
   default: false
 })
 
@@ -37,14 +37,16 @@ export const setMoveablePointArrState = selector({
   get: () => { },
   set: (({ get, set }) => {
     const position: string[][] = get(positionArrState);
+    const enpassant = get(enPassantState);
+    const castle = get(castleState);
 
     let whiteMoveable: boolean[][] = new Array(8).fill(false).map(() => new Array(8).fill(false));
     let blackMoveable: boolean[][] = new Array(8).fill(false).map(() => new Array(8).fill(false));
 
     for (let i = 0; i < 8; i++) {
       for (let j = 0; j < 8; j++) {
-        if (position[i][j] === position[i][j].toUpperCase()) getPieceMoveablePointToArr(position[i][j], i, j, position, whiteMoveable);
-        if (position[i][j] !== position[i][j].toUpperCase()) getPieceMoveablePointToArr(position[i][j], i, j, position, blackMoveable);
+        if (position[i][j] === position[i][j].toUpperCase()) getPieceMoveablePointToArr(position[i][j], i, j, position, whiteMoveable, enpassant, castle);
+        if (position[i][j] !== position[i][j].toUpperCase()) getPieceMoveablePointToArr(position[i][j], i, j, position, blackMoveable, enpassant, castle);
       }
     }
 
@@ -105,6 +107,6 @@ export const setCheckedState = selector({
     }
 
     set(checkMatedState, [whiteCheckmated, blackCheckmated]);
-    set(staleMatedState, staleMated)
+    set(drawState, staleMated)
   })
 })
