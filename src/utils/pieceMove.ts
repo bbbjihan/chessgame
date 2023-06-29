@@ -1,6 +1,6 @@
 import { selector } from "recoil";
 import { getNumberIndex, getPositionString } from "./functions";
-import { castleState, destinationState, moveableSquareState, movingPieceState, movingStartState, positionArrState, positionState, turnState } from "./recoil";
+import { blackCapturedPiecesState, castleState, destinationState, moveableSquareState, movingPieceState, movingStartState, positionArrState, positionState, turnState, whiteCapturedPiecesState } from "./recoil";
 
 export const pieceMoveState = selector<void>({
   key: "pieceMoveState",
@@ -16,6 +16,18 @@ export const pieceMoveState = selector<void>({
 
     const [startRow, startCol]: [number, number] = getNumberIndex(movingStart);
     const [destiRow, destiCol]: [number, number] = getNumberIndex(destination);
+
+    //capture piece
+    const target = positionArr[destiRow][destiCol];
+    if(target !== ""){
+      if(target === target.toUpperCase()){
+        const whiteCapturedPieces = get(whiteCapturedPiecesState);
+        set(whiteCapturedPiecesState, [...whiteCapturedPieces, target])
+      }else{
+        const blackCapturedPieces = get(blackCapturedPiecesState);
+        set(blackCapturedPiecesState, [...blackCapturedPieces, target])
+      }
+    }
 
     result[startRow][startCol] = "";
     result[destiRow][destiCol] = movingPiece;

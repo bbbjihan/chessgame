@@ -141,7 +141,12 @@ export const destinationState = atom<string>({
   default: ""
 })
 
-export const pieceCapturedState = atom<string[]>({
-  key: "pieceCapturedState",
+export const whiteCapturedPiecesState = atom<string[]>({
+  key: "whiteCapturedPiecesState",
+  default: []
+})
+
+export const blackCapturedPiecesState = atom<string[]>({
+  key: "blackCapturedPiecesState",
   default: []
 })

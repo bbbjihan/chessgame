@@ -22,7 +22,6 @@ export const GlobalFonts = createGlobalStyle`
   @font-face {
     font-family: "Roboto";
     src: url(${RobotoRegular}) format("truetype");
-    unicode-range: U+0041-005A, U+0061-007A;
     font-style: normal;
     font-weight: light;
   }
@@ -30,7 +29,6 @@ export const GlobalFonts = createGlobalStyle`
   @font-face {
     font-family: "Roboto";
     src: url(${RobotoBold}) format("truetype");
-    unicode-range: U+0041-005A, U+0061-007A;
     font-style: normal;
     font-weight: normal;
   }

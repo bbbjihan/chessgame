@@ -17,7 +17,7 @@ export const Header = styled.div`
 export const Body = styled.div`
   padding-top: 4rem;
   z-index: 1;
-  background-color: var(--color-wdsh);
+  background-color: var(--color-sh);
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
 `

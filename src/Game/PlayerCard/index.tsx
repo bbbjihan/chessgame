@@ -1,5 +1,5 @@
 import PieceImg from "../ChessPiece/PieceImg";
-import { CapturedPieces, CardWrap, Left, PawnIMGWrap, PieceScore, PlayerCapturedPieceRow, PlayerColor, PlayerID, PlayerInformRow, PlayerRating, PlayerTitle, Right } from "./style";
+import { CapturedPieces, CardWrap, IMGWrap, Left, PlayerCapturedPieceRow, PlayerColor, PlayerID, PlayerInformRow, PlayerRating, PlayerTitle, Right } from "./style";
 
 interface PlayerCardProps {
   ID: string,
@@ -8,7 +8,7 @@ interface PlayerCardProps {
   color: string,
   capturedPieces: string[],
   pieceScore: number,
-  state: string
+  state: string,
 }
 
 const PlayerCard = ({ ID, rating, title, color, capturedPieces, pieceScore, state }: PlayerCardProps) => {
@@ -17,7 +17,9 @@ const PlayerCard = ({ ID, rating, title, color, capturedPieces, pieceScore, stat
       <Left>
         <PlayerColor
           color={color}
-        />
+        >
+            {pieceScore === 0 ? "" : (pieceScore > 0 ? `+${pieceScore}` : pieceScore)}
+        </PlayerColor>
       </Left>
       <Right>
         <PlayerInformRow>
@@ -28,29 +30,18 @@ const PlayerCard = ({ ID, rating, title, color, capturedPieces, pieceScore, stat
         <PlayerCapturedPieceRow>
           <CapturedPieces>
             {capturedPieces.map((piece, pieceIndex) => {
-              if (piece === "p" || piece === "P") {
-                return (
-                  <PawnIMGWrap>
-                    <PieceImg
-                      piece={piece}
-                      height="2rem"
-                      width="2rem"
-                    />
-                  </PawnIMGWrap>
-                )
-              } else {
-                return (
+              return (
+                <IMGWrap
+                  isPawn={piece === "p" || piece === "P"}
+                >
                   <PieceImg
                     piece={piece}
                     height="2rem"
                     width="2rem"
                   />
-                )
-              }
+                </IMGWrap>
+              )
             })}
-            <PieceScore>
-              {pieceScore}
-            </PieceScore>
           </CapturedPieces>
         </PlayerCapturedPieceRow>
       </Right>
