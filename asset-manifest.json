@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.js": "/chessgame/static/js/main.c3797f81.js",
+    "main.js": "/chessgame/static/js/main.9b364f70.js",
     "static/media/NotoSansKRBold.otf": "/chessgame/static/media/NotoSansKRBold.bad0e182b567b441991f.otf",
     "static/media/NotoSansKRRegular.otf": "/chessgame/static/media/NotoSansKRRegular.77c135a2d8b8f3b01cd0.otf",
     "static/media/RobotoRegular.ttf": "/chessgame/static/media/RobotoRegular.fc2b5060f7accec5cf74.ttf",
     "static/media/RobotoBold.ttf": "/chessgame/static/media/RobotoBold.f80816a5455d171f948d.ttf",
     "index.html": "/chessgame/index.html",
-    "main.c3797f81.js.map": "/chessgame/static/js/main.c3797f81.js.map"
+    "main.9b364f70.js.map": "/chessgame/static/js/main.9b364f70.js.map"
   },
   "entrypoints": [
-    "static/js/main.c3797f81.js"
+    "static/js/main.9b364f70.js"
   ]
 }
