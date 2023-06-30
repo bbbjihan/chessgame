@@ -208,7 +208,7 @@ export const getPieceMoveablePointToArr = (piece: string, row: number, col: numb
   const player = piece === piece.toUpperCase() ? "w" : "b";
   switch (piece) {
     case "P": //white pawn movement
-      if (row === 6 && !position[4][col] && (isSimulation ? true : movementSimulation(piece, row, col, 4, col, position, enPassant, castle, player))) moveable[4][col] = true;
+      if (row === 6 && !position[5][col] && !position[4][col] && (isSimulation ? true : movementSimulation(piece, row, col, 4, col, position, enPassant, castle, player))) moveable[4][col] = true;
       if (row > 0 && !position[row - 1][col] && (isSimulation ? true : movementSimulation(piece, row, col, row - 1, col, position, enPassant, castle, player))) moveable[row - 1][col] = true;
       if (row > 0 && col > 0 && position[row - 1][col - 1] && isOpponent(piece, position[row - 1][col - 1]) && (isSimulation ? true : movementSimulation(piece, row, col, row - 1, col - 1, position, enPassant, castle, player))) moveable[row - 1][col - 1] = true;
       if (row > 0 && col < 7 && position[row - 1][col + 1] && isOpponent(piece, position[row - 1][col + 1]) && (isSimulation ? true : movementSimulation(piece, row, col, row - 1, col + 1, position, enPassant, castle, player))) moveable[row - 1][col + 1] = true;
@@ -225,7 +225,7 @@ export const getPieceMoveablePointToArr = (piece: string, row: number, col: numb
       break;
 
     case "p": //black pawn movement
-      if (row === 1 && !position[3][col] && (isSimulation ? true : movementSimulation(piece, row, col, 3, col, position, enPassant, castle, player))) moveable[3][col] = true;
+      if (row === 1 && !position[2][col] && !position[3][col] && (isSimulation ? true : movementSimulation(piece, row, col, 3, col, position, enPassant, castle, player))) moveable[3][col] = true;
       if (row < 7 && !position[row + 1][col] && (isSimulation ? true : movementSimulation(piece, row, col, row + 1, col, position, enPassant, castle, player))) moveable[row + 1][col] = true;
       if (row < 7 && col > 0 && position[row + 1][col - 1] && isOpponent(piece, position[row + 1][col - 1]) && (isSimulation ? true : movementSimulation(piece, row, col, row + 1, col - 1, position, enPassant, castle, player))) moveable[row + 1][col - 1] = true;
       if (row < 7 && col < 7 && position[row + 1][col + 1] && isOpponent(piece, position[row + 1][col + 1]) && (isSimulation ? true : movementSimulation(piece, row, col, row + 1, col + 1, position, enPassant, castle, player))) moveable[row + 1][col + 1] = true;

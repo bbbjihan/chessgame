@@ -23,13 +23,13 @@ export const GlobalFonts = createGlobalStyle`
     font-family: "Roboto";
     src: url(${RobotoRegular}) format("truetype");
     font-style: normal;
-    font-weight: light;
+    font-weight: normal;
   }
 
   @font-face {
     font-family: "Roboto";
     src: url(${RobotoBold}) format("truetype");
     font-style: normal;
-    font-weight: normal;
+    font-weight: bold;
   }
 `
