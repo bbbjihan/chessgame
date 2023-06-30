@@ -22,10 +22,10 @@ const LogIn = () => {
 
   const onLogInClick = async () => {
     var reg_email = /^([0-9a-zA-Z_\\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
-    if(!reg_email.test(inputEmail)){
+    if (!reg_email.test(inputEmail)) {
       window.alert("이메일 양식이 유효하지 않습니다.");
       return;
-    }else if(inputPW.length < 6){
+    } else if (inputPW.length < 6) {
       window.alert("비밀번호를 6자리 이상 입력해주세요.");
       return;
     }
@@ -51,10 +51,10 @@ const LogIn = () => {
 
   const onSignUpClick = async () => {
     var reg_email = /^([0-9a-zA-Z_\\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
-    if(!reg_email.test(inputEmail)){
+    if (!reg_email.test(inputEmail)) {
       window.alert("이메일 양식이 유효하지 않습니다.");
       return;
-    }else if(inputPW.length < 6){
+    } else if (inputPW.length < 6) {
       window.alert("비밀번호를 6자리 이상 입력해주세요.");
       return;
     }
@@ -74,7 +74,9 @@ const LogIn = () => {
     <LogInPageWrap>
       <BoxWrap>
         <LogInBox>
-          <BoxTitle>Log in to your account</BoxTitle>
+          <BoxTitle>
+            {isSignUp ? `Sign up to your account` : `Log in to your account`}
+          </BoxTitle>
           <BoxRow>
             <InputEmail
               required
@@ -85,7 +87,7 @@ const LogIn = () => {
               onKeyPress={(e) => {
                 if (!isSignUp && e.key === 'Enter') {
                   onLogInClick();
-                }else if(isSignUp && e.key === 'Enter'){
+                } else if (isSignUp && e.key === 'Enter') {
                   onSignUpClick();
                 }
               }}
@@ -101,7 +103,7 @@ const LogIn = () => {
               onKeyPress={(e) => {
                 if (!isSignUp && e.key === 'Enter') {
                   onLogInClick();
-                }else if(isSignUp && e.key === 'Enter'){
+                } else if (isSignUp && e.key === 'Enter') {
                   onSignUpClick();
                 }
               }}
