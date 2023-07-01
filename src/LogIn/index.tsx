@@ -1,7 +1,8 @@
 import { GoogleAuthProvider, createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import { authService, firebase } from "../firebase";
+import { authService, db, firebaseApp } from "../firebase";
 import { BoxRow, BoxTitle, BoxWrap, ButtonRow, CancelButton, CancelButtonContent, CancelButtonString, GoogleLogIn, GoogleLogInButtonContent, GoogleLogInString, GoogleLogo, HR, InputEmail, InputPW, LogInBox, LogInButton, LogInButtonContent, LogInButtonString, LogInPageWrap, SignUpButton, SignUpButtonContent, SignUpButtonString } from "./style";
 
 const LogIn = () => {
@@ -9,16 +10,25 @@ const LogIn = () => {
   const [inputPW, setInputPW] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
   const movePage = useNavigate();
-  const auth = getAuth(firebase);
+  const auth = getAuth(firebaseApp);
 
   useEffect(() => {
     const redirectLobby = async () => {
-      if (auth.currentUser) {
-        movePage("/lobby");
-      }
+      const data = await getDocs(query(collection(db, "user"), where("userID", "==", auth.currentUser?.uid)));
+      console.log(data);
     }
     redirectLobby().catch(err => console.log(err));
   }, [auth.currentUser, movePage]);
+
+  const LogIn = async () => {
+    const data = await getDocs(query(collection(db, "user"), where("userID", "==", auth.currentUser?.uid)));
+    const newData = data.docs.map(doc => ({ ...doc.data()}));
+    if(newData.length > 0){
+      movePage("/lobby")
+    }else{
+      movePage("/entername") 
+    }
+  }
 
   const onLogInClick = async () => {
     var reg_email = /^([0-9a-zA-Z_\\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
@@ -31,7 +41,7 @@ const LogIn = () => {
     }
     await signInWithEmailAndPassword(authService, inputEmail, inputPW)
       .then(() => {
-        movePage("/lobby");
+        LogIn();
       })
       .catch(err => {
         setInputEmail("")
@@ -44,7 +54,7 @@ const LogIn = () => {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(authService, provider)
       .then(() => {
-        movePage("/lobby");
+        LogIn();
       })
       .catch(err => console.log(err));
   }

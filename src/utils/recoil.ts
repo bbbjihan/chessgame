@@ -1,11 +1,12 @@
 import { atom, selector } from "recoil";
+import { GameInformation } from "./interfaces";
 
 export const rotateState = atom<boolean>({
   key: "rotateState",
   default: false
 })
 
-export const FENState = selector<string>({
+export const FENState = selector({
   key: "FENState",
   get: (({ get }) => {
     const position: string = get(positionState);
@@ -157,59 +158,7 @@ export const capturedState = atom<boolean>({
   default: false
 })
 
-interface GamePlayer {
-  ID : string,
-  name : string,
-  record : string,
-  title : string
-}
-interface LobbyGame {
-  gameID : string,
-  startTime : string,
-  white : GamePlayer,
-  black : GamePlayer,
-  FEN : string,
-  state : string
-}
-
-export const lobbyGamesState = atom<LobbyGame[]>({
+export const lobbyGamesState = atom<GameInformation[]|undefined>({
   key: "lobbyGamesState",
-  default: [
-    {
-      gameID : "0001",
-      startTime : "2023-07-01 00:00:00",
-      white: {
-        ID : "",
-        name : "WhitePlayer",
-        record : "10/0/3",
-        title : "IM"
-      },
-      black: {
-        ID : "",
-        name : "BlackPlayer",
-        record : "93/1/30",
-        title : "GM"
-      },
-      FEN: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0",
-      state: "progress"
-    },
-    {
-      gameID : "0002",
-      startTime : "2023-07-02 00:00:00",
-      white: {
-        ID : "",
-        name : "testPlayer1",
-        record : "25/2/23",
-        title : ""
-      },
-      black: {
-        ID : "",
-        name : "testPlayer2",
-        record : "1/1/5",
-        title : ""
-      },
-      FEN: "8/8/8/8/8/5K2/Q7/5k2 w KQkq - 0 0",
-      state: "progress"
-    }
-  ]
+  default: []
 })

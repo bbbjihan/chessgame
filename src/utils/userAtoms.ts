@@ -1,10 +1,10 @@
 import { Auth, getAuth } from "firebase/auth";
 import { atom } from "recoil";
-import { firebase } from "../firebase";
+import { firebaseApp } from "../firebase";
 
 export const UserState = atom<Auth>({
   key: "UserState",
-  default : getAuth(firebase)
+  default : getAuth(firebaseApp)
 })
 
 export const logInState = atom<boolean>({

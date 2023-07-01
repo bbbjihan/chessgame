@@ -2,16 +2,18 @@ import PieceImg from "../ChessPiece/PieceImg";
 import { CapturedPieces, CardWrap, IMGWrap, Left, PlayerCapturedPieceRow, PlayerColor, PlayerID, PlayerInformRow, PlayerRating, PlayerTitle, Right } from "./style";
 
 interface PlayerCardProps {
-  ID: string,
-  rating: number,
+  name: string,
   title: string,
   color: string,
   capturedPieces: string[],
   pieceScore: number,
   state: string,
+  win: number,
+  draw: number,
+  lose: number
 }
 
-const PlayerCard = ({ ID, rating, title, color, capturedPieces, pieceScore, state }: PlayerCardProps) => {
+const PlayerCard = ({ name, win, lose, draw, title, color, capturedPieces, pieceScore, state }: PlayerCardProps) => {
   return (
     <CardWrap>
       <Left>
@@ -23,8 +25,8 @@ const PlayerCard = ({ ID, rating, title, color, capturedPieces, pieceScore, stat
       </Left>
       <Right>
         <PlayerInformRow>
-          <PlayerID>{ID}</PlayerID>
-          <PlayerRating>{rating}</PlayerRating>
+          <PlayerID>{name}</PlayerID>
+          <PlayerRating>{win ? win : `0`} / {draw ? draw : `0`} / {lose ? lose : `0`} {`( ${win + draw === 0 ? `0` : `${(win * 100 / (win + lose)).toFixed(2)}`}% )`}</PlayerRating>
           <PlayerTitle>{title}</PlayerTitle>
         </PlayerInformRow>
         <PlayerCapturedPieceRow>

@@ -147,8 +147,9 @@ export const GameNumber = styled.div`
   height: 1rem;
   width: 100%;
   ${alignCenter()}
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
   color: var(--color-sh);
+  font-weight: normal;
 `
 
 export const GameCardPlayers = styled.div`
@@ -194,7 +195,7 @@ export const PlayerInformRow = styled.div`
   justify-content: right;
   width: 7rem;
   margin-right: 1rem;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
 `
 
 export const PlayerName = styled.div`

@@ -15,8 +15,8 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-export const firebase = initializeApp(firebaseConfig);
+export const firebaseApp = initializeApp(firebaseConfig);
 
 // Initialize Cloud Firestore and get a reference to the service
-export const db = getFirestore(firebase);
-export const authService = getAuth(firebase);
+export const db = getFirestore(firebaseApp);
+export const authService = getAuth(firebaseApp);
