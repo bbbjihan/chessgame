@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 import { useSetRecoilState } from "recoil";
-import { renderMoveablePointState } from "../../utils/pieceMove";
-import { movingPieceState, movingStartState } from "../../utils/recoil";
+import { renderMoveablePointState } from "../../../utils/pieceMove";
+import { movingPieceState, movingStartState } from "../../../utils/recoil";
 import PieceImg from './PieceImg';
 import { ChessPieceWrap } from "./style";
 

@@ -3,14 +3,17 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 import { ReactElement, useEffect, useState } from 'react';
 import { Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { db } from '../../firebase';
+import { GameInformation, UserInform } from '../../utils/interfaces';
+import { gameNumState, lobbyGamesState } from "../../utils/recoil";
 import PieceImg from '../Game/ChessPiece/PieceImg';
-import { db } from '../firebase';
-import { GameInformation, UserInform } from '../utils/interfaces';
-import { lobbyGamesState } from "../utils/recoil";
-import { firebaseApp } from './../firebase';
+import { firebaseApp } from './../../firebase';
 import { BoardWrap, GameCard, GameCardBoard, GameCardPlayers, GameCardState, GameList, GameNumber, LobbyBox, LobbyBoxWrap, LobbyPageWrap, LobbyTitle, LobbyTitleWrap, NewGameButton, NewGameButtonWrap, PlayerColor, PlayerInformRow, PlayerInforms, PlayerLeft, PlayerName, PlayerRecord, PlayerRight, PlayerTitle, ProfileLine, ProfileWrap, ProfileWrapWrap, Square, UserName, UserNameWrap, UserProfile, UserRecord, UserRecordWrap, UserTitle, UserTitleWrap } from "./style";
 
+import { notationState } from '../../utils/notation';
+import { blackCapturedPiecesState, castleState, enPassantState, fullMoveState, halfMoveState, positionState, turnState, whiteCapturedPiecesState } from "../../utils/recoil";
+import { blackPlayerState, whitePlayerState } from '../../utils/userAtoms';
 interface RenderBoardProps {
   FEN: string
 }
@@ -85,7 +88,9 @@ const Lobby = (): ReactElement => {
     lose: 0,
     draw: 0
   });
+  const setGameNum = useSetRecoilState(gameNumState);
 
+  //games inform set
   useEffect(() => {
     const getGames = async () => {
       const data = await getDocs(query(collection(db, "game")));
@@ -118,12 +123,14 @@ const Lobby = (): ReactElement => {
         }
         gamesData.push(gameData);
       })
+      setGameNum(gamesData.length);
       setGames(gamesData);
     }
     getGames()
       .catch(err => console.log(err));
   }, [setGames])
 
+  //userInform set
   useEffect(() => {
     const redirectLobby = async () => {
       if (!auth.currentUser) {
@@ -145,10 +152,51 @@ const Lobby = (): ReactElement => {
     redirectLobby().catch(err => console.log(err));
   }, [auth.currentUser, movePage]);
 
-  const onGameCardClick = (gameID:string) => {
-    movePage(`/game?ID=${gameID}`)
+  //for enter game page
+  const setWhiteCapturedPieces = useSetRecoilState(whiteCapturedPiecesState);
+  const setBlackCapturedPieces = useSetRecoilState(blackCapturedPiecesState);
+  const setPosition = useSetRecoilState(positionState);
+  const setTurn = useSetRecoilState(turnState);
+  const setCastle = useSetRecoilState(castleState);
+  const setEnPassant = useSetRecoilState(enPassantState);
+  const setHalfMove = useSetRecoilState(halfMoveState);
+  const setFullMove = useSetRecoilState(fullMoveState);
+  const setNotation = useSetRecoilState(notationState);
+  const setWhitePlayer = useSetRecoilState(whitePlayerState);
+  const setBlackPlayer = useSetRecoilState(blackPlayerState);
+  
+  const fetchGame = async(gameID:string) => {
+    const data = await getDocs(query(collection(db, "game")));
+    data.forEach(doc => {
+      if(doc.id === gameID){
+        setWhitePlayer(doc.data().white);
+        setBlackPlayer(doc.data().black);
+        setWhiteCapturedPieces([ ...doc.data().captured ].filter(x => (x === x.toUpperCase())))
+        setBlackCapturedPieces([ ...doc.data().captured ].filter(x => (x !== x.toUpperCase())))
+        const [position, turn, castle, enpassant, halfMove, fullMove] = doc.data().FEN.split(' ');
+        setPosition(position);
+        setTurn(turn);
+        setCastle(castle);
+        setEnPassant(enpassant);
+        setHalfMove(halfMove);
+        setFullMove(fullMove);
+        setNotation(doc.data().notation);
+      }
+    })
   }
 
+  const onGameCardClick = (gameID:string) => {
+    fetchGame(gameID)
+    .then(() => {
+      movePage(`/game?ID=${gameID}`)
+    })
+    .catch(err => console.log(err))
+  }
+
+  const onNewGameClick = () => {
+    movePage("/newgame");
+  }
+  
   return (
     <LobbyPageWrap>
       <ProfileWrapWrap>
@@ -166,7 +214,9 @@ const Lobby = (): ReactElement => {
               <UserRecord>{userInform.win ? userInform.win : `0`} / {userInform.draw ? userInform.draw : `0`} / {userInform.lose ? userInform.lose : `0`} {`( ${userInform.win + userInform.draw === 0 ? `0` : `${(userInform.win * 100 / (userInform.win + userInform.lose)).toFixed(2)}`}% )`}</UserRecord>
             </UserRecordWrap>
             <ProfileLine />
-            <NewGameButtonWrap>
+            <NewGameButtonWrap
+              onClick={onNewGameClick}
+            >
               <NewGameButton>NEW GAME</NewGameButton>
             </NewGameButtonWrap>
           </UserProfile>
@@ -183,7 +233,7 @@ const Lobby = (): ReactElement => {
                 return (
                   <GameCard
                     onClick={()=>{
-                      onGameCardClick(game.gameID);
+                      onGameCardClick(game.gameID ? game.gameID : "");
                     }}
                   >
                     <GameNumber>

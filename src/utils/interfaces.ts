@@ -10,8 +10,17 @@ export interface UserInform {
   lose : number,
   draw : number
 }
+
+export const UserInformDefault = {
+  userID: "",
+  name: "",
+  title: "",
+  win: 0,
+  lose: 0,
+  draw: 0
+}
 export interface GameInformation {
-  gameID : string,
+  gameID? : string,
   gameNum: number,
   startTime : string,
   white : UserInform,

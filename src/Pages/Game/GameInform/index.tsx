@@ -1,7 +1,7 @@
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { checkMatedState, checkedState, drawState } from "../../utils/checkChecked";
-import { notationState } from "../../utils/notation";
-import { rotateState, turnState } from "../../utils/recoil";
+import { checkMatedState, checkedState, drawState } from "../../../utils/checkChecked";
+import { notationState } from "../../../utils/notation";
+import { rotateState, turnState } from "../../../utils/recoil";
 import { Bottom, ForMaxWidth, GameInformWrap, GameStateRow, Middle, NotationBlack, NotationNum, NotationRow, NotationWhite, NotationWrap, RotateButton, RotateButtonWrap, TimeMachineRow, Top, TopLeft, TopRight } from "./style";
 
 const RenderNotation = () => {

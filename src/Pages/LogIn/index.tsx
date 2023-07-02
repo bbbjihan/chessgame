@@ -2,7 +2,7 @@ import { GoogleAuthProvider, createUserWithEmailAndPassword, getAuth, signInWith
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import { authService, db, firebaseApp } from "../firebase";
+import { authService, db, firebaseApp } from "../../firebase";
 import { BoxRow, BoxTitle, BoxWrap, ButtonRow, CancelButton, CancelButtonContent, CancelButtonString, GoogleLogIn, GoogleLogInButtonContent, GoogleLogInString, GoogleLogo, HR, InputEmail, InputPW, LogInBox, LogInButton, LogInButtonContent, LogInButtonString, LogInPageWrap, SignUpButton, SignUpButtonContent, SignUpButtonString } from "./style";
 
 const LogIn = () => {

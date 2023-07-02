@@ -1,15 +1,15 @@
 import { ReactElement } from "react";
 import { useResetRecoilState, useSetRecoilState } from "recoil";
-import { setCheckedState, setMoveablePointArrState } from "../../utils/checkChecked";
-import { setNotationState } from "../../utils/notation";
-import { pieceMoveState } from "../../utils/pieceMove";
+import { setCheckedState, setMoveablePointArrState } from "../../../utils/checkChecked";
+import { setNotationState } from "../../../utils/notation";
+import { pieceMoveState } from "../../../utils/pieceMove";
 import {
   destinationState,
   moveableSquareState,
   movingPieceState,
   movingStartState,
   turnState
-} from "../../utils/recoil";
+} from "../../../utils/recoil";
 import { DotWrap, MoveableDot } from "./style";
 
 interface MoveablePointProps {

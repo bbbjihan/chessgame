@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { responsive } from "../../styles/macros";
+import { responsive } from "../../../styles/macros";
 
 interface SquareProps {
   isDark : boolean,

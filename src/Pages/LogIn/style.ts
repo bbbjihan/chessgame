@@ -1,6 +1,6 @@
 import { FcGoogle } from "react-icons/fc";
 import styled from "styled-components";
-import { alignCenter, responsive } from "../styles/macros";
+import { alignCenter, responsive } from "../../styles/macros";
 
 export const LogInPageWrap = styled.div`
   display:flex;

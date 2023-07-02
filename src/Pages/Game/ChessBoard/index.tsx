@@ -1,8 +1,8 @@
 import { ReactElement } from "react";
 import { Row } from "react-bootstrap";
 import { useRecoilValue } from "recoil";
-import { getSquareIndex } from "../../utils/functions";
-import { moveableSquareState, positionArrState, rotateState } from "../../utils/recoil";
+import { getSquareIndex } from "../../../utils/functions";
+import { moveableSquareState, positionArrState, rotateState } from "../../../utils/recoil";
 import ChessPiece from "../ChessPiece";
 import MoveablePoint from "./MoveablePoint";
 import { Board, BoardBlock, BoardWrap, Square } from "./style";

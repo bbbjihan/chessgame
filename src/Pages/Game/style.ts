@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { alignCenter, responsive } from "../styles/macros";
+import { alignCenter, responsive } from "../../styles/macros";
 
 export const PageWrap = styled.div`
   ${alignCenter()}

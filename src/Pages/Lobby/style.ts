@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { alignCenter, responsive } from "../styles/macros";
+import { alignCenter, responsive } from "../../styles/macros";
 
 export const LobbyPageWrap = styled.div`
 `
@@ -100,9 +100,7 @@ export const LobbyBoxWrap = styled.div`
 
 export const LobbyBox = styled.div`
   width: 100%;
-  height: 44rem;
   background-color: var(--color-wddk);
-  overflow-Y: auto;
   ${responsive('large')}{
     width: 52.5rem;
     margin-top: 1rem;
@@ -119,6 +117,7 @@ export const LobbyTitleWrap = styled.div`
   height: 2rem;
   background-color: var(--color-wdbl);
   ${alignCenter()}
+  border-radius: 0.5rem 0.5rem 0 0;
 `
 
 export const GameList = styled.div`
@@ -129,6 +128,19 @@ export const GameList = styled.div`
   ${responsive('large')}{
     justify-content: flex-start;
   }
+  height: 44rem;
+  overflow-Y: auto;
+  &::-webkit-scrollbar {
+    width: 15px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: white;
+    border-radius: 15px; 
+    border: 5.25px solid var(--color-wddk);
+  }
+  &::-webkit-scrollbar-track{
+    background-color: rgba(0,0,0,0);
+  }
 `
 
 export const GameCard = styled.div`
@@ -136,7 +148,7 @@ export const GameCard = styled.div`
   flex-direction:column;
   height: 19rem;
   width: 11rem;
-  margin: 1rem;
+  margin: 0.8rem;
   border: 1px solid var(--color-wdk);
   border-radius: 0.5rem;
   background-color:var(--color-wdnm);

@@ -1,10 +1,16 @@
 import { getAuth } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
-import { HeaderWrap, LogOutButton, LogOutButtonContent, LogOutButtonString, LogOutButtonWrap } from "./style";
+import { useLocation, useNavigate } from "react-router-dom";
+import { BackButton, BackButtonWrap, HeaderButtonContent, HeaderButtonString, HeaderLogo, HeaderWrap, LogOutButton, LogOutButtonWrap } from "./style";
 
 const HeaderContent = () => {
   const auth = getAuth();
   const movePage = useNavigate();
+  const location = useLocation();
+
+  const onBackClick = () => {
+    movePage("lobby");
+  }
+
   const onLogOutClick = async () => {
     auth.signOut()
       .then(() => {
@@ -13,23 +19,35 @@ const HeaderContent = () => {
       .catch(err => console.log(err))
   }
   return (
-    <>
-      <HeaderWrap>
+    <HeaderWrap>
+    {(location.pathname === "/game" || location.pathname === "/newgame") && (
+        <BackButtonWrap
+          onClick={onBackClick}
+        >
+          <HeaderButtonContent>
+            <BackButton />
+            <HeaderButtonString>
+              Back
+            </HeaderButtonString>
+          </HeaderButtonContent>
+        </BackButtonWrap>
+    )}
+      <HeaderLogo>
         CHESSGAME
-      </HeaderWrap>
+      </HeaderLogo>
       {auth.currentUser &&
         <LogOutButtonWrap
           onClick={onLogOutClick}
         >
-          <LogOutButtonContent>
+          <HeaderButtonContent>
             <LogOutButton />
-            <LogOutButtonString>
+            <HeaderButtonString>
               LogOut
-            </LogOutButtonString>
-          </LogOutButtonContent>
+            </HeaderButtonString>
+          </HeaderButtonContent>
         </LogOutButtonWrap>
       }
-    </>
+    </HeaderWrap>
   )
 }
 

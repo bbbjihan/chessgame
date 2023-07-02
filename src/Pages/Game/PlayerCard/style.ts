@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { alignCenter, flex, responsive } from "../../styles/macros"
+import { alignCenter, flex, responsive } from "../../../styles/macros"
 
 export const CardWrap = styled.div`
   height: 5rem;

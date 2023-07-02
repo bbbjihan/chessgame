@@ -162,3 +162,8 @@ export const lobbyGamesState = atom<GameInformation[]|undefined>({
   key: "lobbyGamesState",
   default: []
 })
+
+export const gameNumState = atom<number>({
+  key: "gamaNumState",
+  default: 0
+})

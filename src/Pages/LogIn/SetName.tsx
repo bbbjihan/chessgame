@@ -2,8 +2,8 @@ import { getAuth } from "firebase/auth";
 import { addDoc, collection } from "firebase/firestore";
 import { ReactElement, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { db, firebaseApp } from "../firebase";
-import { UserInform } from "../utils/interfaces";
+import { db, firebaseApp } from "../../firebase";
+import { UserInform } from "../../utils/interfaces";
 import { BoxRow, BoxTitle, BoxWrap, ButtonRow, InputPW, LogInBox, LogInButton, LogInButtonContent, LogInButtonString, LogInPageWrap } from "./style";
 
 const SetName = (): ReactElement => {
