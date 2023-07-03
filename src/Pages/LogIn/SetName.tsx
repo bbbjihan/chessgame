@@ -23,7 +23,6 @@ const SetName = (): ReactElement => {
     }
     await addDoc(userDocRef, userInform)
     .then(req => {
-      console.log(req);
       movePage("/lobby");
     })
     .catch(err => console.log(`onSetNameClick err : ` + err));

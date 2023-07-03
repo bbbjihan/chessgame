@@ -9,9 +9,9 @@ export const Header = styled.div`
   height: 4rem;
   width: 100%;
   background-color: var(--color-wdbl);
-  z-index: 3;
   position: fixed;
   top: 0;
+  z-index: 5;
 `
 
 export const Body = styled.div`

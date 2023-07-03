@@ -1,8 +1,10 @@
-import { collection, getDocs, query } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from 'react';
 import { useSearchParams } from "react-router-dom";
-import { db } from "../../firebase";
+import { db, firebaseApp } from "../../firebase";
 import { UserInform } from "../../utils/interfaces";
+import Loading from "../Loading";
 import ChessBoard from "./ChessBoard";
 import GameInform from "./GameInform";
 import PlayerCard from "./PlayerCard";
@@ -30,7 +32,7 @@ const Game = () => {
   const [checkMated, setCheckMated] = useState<boolean[]>([false, false]);
   const [isDraw, setIsDraw] = useState<boolean>(false);
 
-  const [promotionPiece, setPromotionPiece] = useState("Q");
+  const [promotionPiece, setPromotionPiece] = useState<string>("Q");
 
   const [pieceScore, setPieceScore] = useState<number[]>([0, 0, 0]);
   //pieceScore automatically renewal
@@ -96,117 +98,156 @@ const Game = () => {
   const [notation, setNotation] = useState<string[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  //for enter game page
+  const [whoIsCurrentUser, setWhoIsCurrentUser] = useState<string>("");
+  const auth = getAuth(firebaseApp);
+
+  //first rendering
+  useEffect(() => {
+    const fetchInforms = async () => {
+      const gameID = searchParams.get("ID");
+      if (typeof gameID === "string") {
+        const gameRef = doc(db, "game", gameID);
+        const gameDoc = await getDoc(gameRef);
+        console.log(gameDoc.data()!.white);
+        const [Dposition, Dturn, Dcastle, Denpassant, DhalfMove, DfullMove] = gameDoc.data()!.FEN.split(' ');
+        setWhitePlayer(gameDoc.data()!.white);
+        setBlackPlayer(gameDoc.data()!.black);
+        setWhiteCapturedPieces([...gameDoc.data()!.captured].filter(x => (x === x.toUpperCase())))
+        setBlackCapturedPieces([...gameDoc.data()!.captured].filter(x => (x !== x.toUpperCase())))
+        setPosition(Dposition);
+        setTurn(Dturn);
+        setCastle(Dcastle);
+        setEnPassant(Denpassant);
+        setHalfMove(DhalfMove);
+        setFullMove(DfullMove);
+        setNotation(gameDoc.data()!.notation);
+        
+        if (gameDoc.data()!.white.userID === auth.currentUser?.uid) {
+          setWhoIsCurrentUser("w")
+        } else if (gameDoc.data()!.black.userID === auth.currentUser?.uid) {
+          setWhoIsCurrentUser("b")
+          setRotate(true);
+        } else {
+          setWhoIsCurrentUser("n")
+        }
+      }
+    }
+    fetchInforms()
+      .then(() => { setGameLoading(false) });
+  }, [searchParams])
+
+  //get game inform repetively
   useEffect(() => {
     const fetchGame = async () => {
       const gameID = searchParams.get("ID");
-      const data = await getDocs(query(collection(db, "game")));
-      data.forEach(doc => {
-        if (doc.id === gameID) {
-          setWhitePlayer(doc.data().white);
-          setBlackPlayer(doc.data().black);
-          setWhiteCapturedPieces([...doc.data().captured].filter(x => (x === x.toUpperCase())))
-          setBlackCapturedPieces([...doc.data().captured].filter(x => (x !== x.toUpperCase())))
-          const [Dposition, Dturn, Dcastle, Denpassant, DhalfMove, DfullMove] = doc.data().FEN.split(' ');
-          setPosition(Dposition);
-          setTurn(Dturn);
-          setCastle(Dcastle);
-          setEnPassant(Denpassant);
-          setHalfMove(DhalfMove);
-          setFullMove(DfullMove);
-          setNotation(doc.data().notation);
-        }
-      })
+      if (typeof gameID === "string") {
+        const gameRef = doc(db, "game", gameID);
+        const gameDoc = await getDoc(gameRef);
+        const DFEN = gameDoc.data()!.FEN
+        if (DFEN === FEN) return;
+        const [Dposition, Dturn, Dcastle, Denpassant, DhalfMove, DfullMove] = DFEN.split(' ');
+        setWhitePlayer(gameDoc.data()!.white);
+        setBlackPlayer(gameDoc.data()!.black);
+        setWhiteCapturedPieces([...gameDoc.data()!.captured].filter(x => (x === x.toUpperCase())))
+        setBlackCapturedPieces([...gameDoc.data()!.captured].filter(x => (x !== x.toUpperCase())))
+        setPosition(Dposition);
+        setTurn(Dturn);
+        setCastle(Dcastle);
+        setEnPassant(Denpassant);
+        setHalfMove(DhalfMove);
+        setFullMove(DfullMove);
+        setNotation(gameDoc.data()!.notation);
+      }
     }
-    fetchGame().then(() => (setGameLoading(false)))
-      .catch(err => console.log(`fetchGame error : ` + err))
+    let timer = setInterval(() => {
+      fetchGame()
+        .catch(err => console.log(`fetchGame err : ` + err))
+    }, 3000);
+    return () => clearInterval(timer);
   }, [searchParams])
 
+
   return (
-    <>
-      {gameLoading ?
-        "Loading..."
-        :
-        <PageWrap>
-          <PageContent>
-            <PlayerAndBoard
+    <PageWrap>
+      {gameLoading && <Loading />}
+      <PageContent>
+        <PlayerAndBoard
+          rotate={rotate}
+        >
+          <PlayerCardWrap>
+            <PlayerCard
+              name={blackPlayer.name}
+              win={blackPlayer.win}
+              lose={blackPlayer.lose}
+              draw={blackPlayer.draw}
+              title={blackPlayer.title}
+              color="b"
+              capturedPieces={whiteCapturedPieces}
+              pieceScore={- pieceScore[2]}
+              state="normal"
+            />
+          </PlayerCardWrap>
+          <ChessBoardWrap>
+            <ChessBoard
+              whoIsCurrentUser={whoIsCurrentUser}
+              position={position}
               rotate={rotate}
-            >
-              <PlayerCardWrap>
-                <PlayerCard
-                  name={blackPlayer.name}
-                  win={blackPlayer.win}
-                  lose={blackPlayer.lose}
-                  draw={blackPlayer.draw}
-                  title={blackPlayer.title}
-                  color="b"
-                  capturedPieces={whiteCapturedPieces}
-                  pieceScore={- pieceScore[2]}
-                  state="normal"
-                />
-              </PlayerCardWrap>
-              <ChessBoardWrap>
-                <ChessBoard
-                  position={position}
-                  rotate={rotate}
-                  enPassant={enPassant}
-                  castle={castle}
-                  turn={turn}
-                  promotionPiece={promotionPiece}
-                  checked={checked}
-                  checkMated={checkMated}
-                  halfMove={halfMove}
-                  fullMove={fullMove}
-                  whiteCapturedPieces={whiteCapturedPieces}
-                  blackCapturedPieces={blackCapturedPieces}
-                  notation={notation}
-                  setChecked={setChecked}
-                  setCheckMated={setCheckMated}
-                  setIsDraw={setIsDraw}
-                  setTurn={setTurn}
-                  setNotation={setNotation}
-                  setWhiteCapturedPieces={setWhiteCapturedPieces}
-                  setBlackCapturedPieces={setBlackCapturedPieces}
-                  setHalfMove={setHalfMove}
-                  setFullMove={setFullMove}
-                  setEnPassant={setEnPassant}
-                  setCastle={setCastle}
-                  setPosition={setPosition}
-                />
-              </ChessBoardWrap>
-              <PlayerCardWrap>
-                <PlayerCard
-                  name={whitePlayer.name}
-                  win={whitePlayer.win}
-                  lose={whitePlayer.lose}
-                  draw={whitePlayer.draw}
-                  title={whitePlayer.title}
-                  color="w"
-                  capturedPieces={blackCapturedPieces}
-                  pieceScore={pieceScore[2]}
-                  state="normal"
-                />
-              </PlayerCardWrap>
-            </PlayerAndBoard>
-            <GameInformWrap>
-              <GameInform
-                notation={notation}
-                setRotate={setRotate}
-                checked={checked}
-                checkMated={checkMated}
-                isDraw={isDraw}
-                turn={turn}
-              />
-            </GameInformWrap>
-          </PageContent>
-          <BottomGameInform>
-            <BottomRow>
-              FEN: {FEN}
-            </BottomRow>
-          </BottomGameInform>
-        </PageWrap>
-      }
-    </>
+              enPassant={enPassant}
+              castle={castle}
+              turn={turn}
+              promotionPiece={promotionPiece}
+              checked={checked}
+              checkMated={checkMated}
+              halfMove={halfMove}
+              fullMove={fullMove}
+              whiteCapturedPieces={whiteCapturedPieces}
+              blackCapturedPieces={blackCapturedPieces}
+              notation={notation}
+              setChecked={setChecked}
+              setCheckMated={setCheckMated}
+              setIsDraw={setIsDraw}
+              setTurn={setTurn}
+              setNotation={setNotation}
+              setWhiteCapturedPieces={setWhiteCapturedPieces}
+              setBlackCapturedPieces={setBlackCapturedPieces}
+              setHalfMove={setHalfMove}
+              setFullMove={setFullMove}
+              setEnPassant={setEnPassant}
+              setCastle={setCastle}
+              setPosition={setPosition}
+            />
+          </ChessBoardWrap>
+          <PlayerCardWrap>
+            <PlayerCard
+              name={whitePlayer.name}
+              win={whitePlayer.win}
+              lose={whitePlayer.lose}
+              draw={whitePlayer.draw}
+              title={whitePlayer.title}
+              color="w"
+              capturedPieces={blackCapturedPieces}
+              pieceScore={pieceScore[2]}
+              state="normal"
+            />
+          </PlayerCardWrap>
+        </PlayerAndBoard>
+        <GameInformWrap>
+          <GameInform
+            notation={notation}
+            setRotate={setRotate}
+            checked={checked}
+            checkMated={checkMated}
+            isDraw={isDraw}
+            turn={turn}
+          />
+        </GameInformWrap>
+      </PageContent>
+      <BottomGameInform>
+        <BottomRow>
+          FEN: {FEN}
+        </BottomRow>
+      </BottomGameInform>
+    </PageWrap>
   )
 }
 

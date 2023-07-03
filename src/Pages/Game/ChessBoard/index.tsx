@@ -9,6 +9,7 @@ import ChessPiece from "../ChessPiece";
 import { Board, BoardBlock, BoardRow, BoardWrap, DotWrap, MoveableDot, Square } from "./style";
 
 interface ChessBoardProps {
+  whoIsCurrentUser: string,
   position: string,
   rotate: boolean,
   enPassant: string,
@@ -36,7 +37,7 @@ interface ChessBoardProps {
   setPosition: setUseStateType<string>,
 }
 
-const ChessBoard = ({ position, rotate, enPassant, castle, turn, halfMove, fullMove, whiteCapturedPieces, blackCapturedPieces, notation, setChecked, setCheckMated, setIsDraw, setTurn, setNotation, setWhiteCapturedPieces, setBlackCapturedPieces, setHalfMove, setFullMove, setEnPassant, setCastle, promotionPiece, setPosition, checked, checkMated }: ChessBoardProps): ReactElement => {
+const ChessBoard = ({ whoIsCurrentUser, position, rotate, enPassant, castle, turn, halfMove, fullMove, whiteCapturedPieces, blackCapturedPieces, notation, setChecked, setCheckMated, setIsDraw, setTurn, setNotation, setWhiteCapturedPieces, setBlackCapturedPieces, setHalfMove, setFullMove, setEnPassant, setCastle, promotionPiece, setPosition, checked, checkMated }: ChessBoardProps): ReactElement => {
   const [positionArr, setPositionArr] = useState(new Array(8).fill("").map(() => new Array(8).fill("")));
   const [moveableSquare, setMoveableSquare] = useState<boolean[][]>(new Array(8).fill(false).map(() => new Array(8).fill(false)));
   const [whiteWholeMoveableSquare, setWhiteWholeMoveableSquare] = useState(new Array(8).fill(false).map(() => new Array(8).fill(false)));
@@ -136,6 +137,10 @@ const ChessBoard = ({ position, rotate, enPassant, castle, turn, halfMove, fullM
 
   //render moveablePoint when clicked Piece
   useEffect(() => {
+    if(whoIsCurrentUser === "s" || (whoIsCurrentUser === "w" && turn === "b") || (whoIsCurrentUser === "b" && turn === "w")){
+      return;
+    }
+
     const [row, col]: [number, number] = getNumberIndex(movingStart);
     let moveable = new Array(8).fill(false).map(() => new Array(8).fill(false));
 
@@ -171,7 +176,7 @@ const ChessBoard = ({ position, rotate, enPassant, castle, turn, halfMove, fullM
       if (movingPiece === "P" || movingPiece === "p") {
         setHalfMove(0);
       } else {
-        setHalfMove(prev => prev + 1);
+        setHalfMove(prev => (parseInt(prev.toString()) + 1));
       }
 
       //set fullMoveState

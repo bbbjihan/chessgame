@@ -11,6 +11,7 @@ import PieceImg from '../Game/ChessPiece/PieceImg';
 import { firebaseApp } from './../../firebase';
 import { BoardWrap, GameCard, GameCardBoard, GameCardPlayers, GameCardState, GameList, GameNumber, LobbyBox, LobbyBoxWrap, LobbyPageWrap, LobbyTitle, LobbyTitleWrap, NewGameButton, NewGameButtonWrap, PlayerColor, PlayerInformRow, PlayerInforms, PlayerLeft, PlayerName, PlayerRecord, PlayerRight, PlayerTitle, ProfileLine, ProfileWrap, ProfileWrapWrap, Square, UserName, UserNameWrap, UserProfile, UserRecord, UserRecordWrap, UserTitle, UserTitleWrap } from "./style";
 
+import Loading from '../Loading';
 import { getRecordString } from './../../utils/functions';
 interface RenderBoardProps {
   FEN: string
@@ -88,11 +89,12 @@ const Lobby = (): ReactElement => {
   });
   const setGameNum = useSetRecoilState(gameNumState);
 
+  const [loading, setLoading] = useState(true);
   //games inform set
   useEffect(() => {
     const getGames = async () => {
       const data = await getDocs(query(collection(db, "game")));
-      const gamesData:GameInformation[] = [];
+      const gamesData: GameInformation[] = [];
       data.docs.forEach(async (gameDoc) => {
         const gameData = {
           gameID: gameDoc.id,
@@ -126,8 +128,13 @@ const Lobby = (): ReactElement => {
         return (a.gameNum - b.gameNum);
       }));
     }
-    getGames()
-    .catch(err => console.log(`getGames err : ` + err));
+    setInterval(() => {
+      getGames()
+        .then(() => {
+          setLoading(false);
+        })
+        .catch(err => console.log(`getGames err : ` + err))
+    }, 3000);
   }, [setGames])
 
   //userInform set
@@ -150,21 +157,22 @@ const Lobby = (): ReactElement => {
       }
     }
     redirectLobby()
-    .catch(err => console.log(`redirectLobby err : ` + err));
+      .catch(err => console.log(`redirectLobby err : ` + err));
   }, [auth.currentUser, movePage]);
 
-  
 
-  const onGameCardClick = (gameID:string) => {
+
+  const onGameCardClick = (gameID: string) => {
     movePage(`/game?ID=${gameID}`)
   }
 
   const onNewGameClick = () => {
     movePage("/newgame");
   }
-  
+
   return (
     <LobbyPageWrap>
+      {loading && <Loading />}
       <ProfileWrapWrap>
         <ProfileWrap>
           <UserProfile>
@@ -198,7 +206,7 @@ const Lobby = (): ReactElement => {
               games.slice().reverse().map((game) => {
                 return (
                   <GameCard
-                    onClick={()=>{
+                    onClick={() => {
                       onGameCardClick(game.gameID ? game.gameID : "");
                     }}
                   >
@@ -220,7 +228,7 @@ const Lobby = (): ReactElement => {
                             <PlayerTitle>{game.white.title}</PlayerTitle>
                           </PlayerInformRow>
                           <PlayerInformRow>
-                            <PlayerRecord>{getRecordString(game.white.win,game.white.draw,game.white.lose)}</PlayerRecord>
+                            <PlayerRecord>{getRecordString(game.white.win, game.white.draw, game.white.lose)}</PlayerRecord>
                           </PlayerInformRow>
                         </PlayerRight>
                       </PlayerInforms>
@@ -238,7 +246,7 @@ const Lobby = (): ReactElement => {
                             <PlayerTitle>{game.black.title}</PlayerTitle>
                           </PlayerInformRow>
                           <PlayerInformRow>
-                            <PlayerRecord>{getRecordString(game.black.win,game.black.draw,game.black.lose)}</PlayerRecord>
+                            <PlayerRecord>{getRecordString(game.black.win, game.black.draw, game.black.lose)}</PlayerRecord>
                           </PlayerInformRow>
                         </PlayerRight>
                       </PlayerInforms>

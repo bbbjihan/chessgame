@@ -30,7 +30,7 @@ const NewGame = () => {
     const fetchUserInforms = async () => {
       const data = await getDocs(query(collection(db, "user")));
       const newData:UserInform[] = data.docs.map(doc => ({ ...{
-        userID: (doc.id ? doc.id : ""),
+        userID: (doc.data().userID ? doc.data().userID : ""),
         name: (doc.data().name ? doc.data().name : ""),
         title: (doc.data().title ? doc.data().title : ""),
         win: (doc.data().win ? doc.data().win : 0),
