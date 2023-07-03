@@ -1,7 +1,7 @@
 import { atom, selector } from "recoil";
 import { checkMatedState, checkedState } from "./checkChecked";
 import { getNumberIndex } from "./functions";
-import { capturedState, destinationState, movingPieceState, movingStartState } from "./recoil";
+import { capturedState, destinationState, movingPieceState, movingStartState, promotionPieceState } from "./recoil";
 
 export const notationState = atom<string[]>({
   key: "notationState",
@@ -18,6 +18,7 @@ export const setNotationState = selector({
     const checked = get(checkedState);
     const checkMated = get(checkMatedState);
     const captured = get(capturedState);
+    const promotionPiece = get(promotionPieceState);
 
     let newNot = ``;
     if((movingPiece === "K" || movingPiece === "k") && Math.abs(getNumberIndex(movingStart)[1] - getNumberIndex(destination)[1]) > 1){
@@ -33,12 +34,17 @@ export const setNotationState = selector({
         }else{
           newNot = `${destination}`
         }
+        if(destination[1] === "8" && movingPiece === "P"){
+          newNot += `=${promotionPiece}`
+        }else if(destination[1] === "1" && movingPiece === "p"){
+          newNot += `=${promotionPiece.toLowerCase()}`
+        }
       }else{
         newNot = `${movingPiece.toUpperCase()}${captured ? `x` : ``}${destination}`
-        if(checkMated[0] || checkMated[1]) newNot += `#`
-        else if(checked[0] || checked[1]) newNot += `+`
       }
     }
+    if(checkMated[0] || checkMated[1]) newNot += `#`;
+    else if(checked[0] || checked[1]) newNot += `+`;
     set(notationState, prev => [...prev, newNot])
   }
 })

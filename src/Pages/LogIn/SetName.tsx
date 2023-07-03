@@ -26,7 +26,7 @@ const SetName = (): ReactElement => {
       console.log(req);
       movePage("/lobby");
     })
-    .catch(err => console.log(err))
+    .catch(err => console.log(`onSetNameClick err : ` + err));
   }
 
   return (

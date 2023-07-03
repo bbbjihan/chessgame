@@ -14,7 +14,7 @@ const Game = () => {
   const pieceScore = useRecoilValue(pieceScoreState);
   const blackPlayer = useRecoilValue(blackPlayerState);
   const whitePlayer = useRecoilValue(whitePlayerState);
-
+  
   return (
     <PageWrap>
       <PageContent>

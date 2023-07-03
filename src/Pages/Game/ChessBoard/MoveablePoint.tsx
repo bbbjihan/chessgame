@@ -30,13 +30,12 @@ const MoveablePoint = ({ destination }: MoveablePointProps): ReactElement => {
   const setChecked = useSetRecoilState(setCheckedState);
   const setNotation = useSetRecoilState(setNotationState);
 
-  const onClick = () => {
+  const onClick = async() => {
     setDestination(destination);
 
     pieceMove();
     
     setTurn((prev) => prev === "w" ? "b" : "w");
-
     setMoveablePoints();
     setChecked();
     setNotation();

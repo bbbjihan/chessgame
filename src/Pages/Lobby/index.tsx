@@ -14,6 +14,7 @@ import { BoardWrap, GameCard, GameCardBoard, GameCardPlayers, GameCardState, Gam
 import { notationState } from '../../utils/notation';
 import { blackCapturedPiecesState, castleState, enPassantState, fullMoveState, halfMoveState, positionState, turnState, whiteCapturedPiecesState } from "../../utils/recoil";
 import { blackPlayerState, whitePlayerState } from '../../utils/userAtoms';
+import { getRecordString } from './../../utils/functions';
 interface RenderBoardProps {
   FEN: string
 }
@@ -124,10 +125,12 @@ const Lobby = (): ReactElement => {
         gamesData.push(gameData);
       })
       setGameNum(gamesData.length);
-      setGames(gamesData);
+      setGames(gamesData.sort((a, b) => {
+        return (a.gameNum - b.gameNum);
+      }));
     }
     getGames()
-      .catch(err => console.log(err));
+    .catch(err => console.log(`getGames err : ` + err));
   }, [setGames])
 
   //userInform set
@@ -149,7 +152,8 @@ const Lobby = (): ReactElement => {
         setUserInform(userInform);
       }
     }
-    redirectLobby().catch(err => console.log(err));
+    redirectLobby()
+    .catch(err => console.log(`redirectLobby err : ` + err));
   }, [auth.currentUser, movePage]);
 
   //for enter game page
@@ -190,7 +194,7 @@ const Lobby = (): ReactElement => {
     .then(() => {
       movePage(`/game?ID=${gameID}`)
     })
-    .catch(err => console.log(err))
+    .catch(err => console.log(`onGameCardClick err : ` + err));
   }
 
   const onNewGameClick = () => {
@@ -254,7 +258,7 @@ const Lobby = (): ReactElement => {
                             <PlayerTitle>{game.white.title}</PlayerTitle>
                           </PlayerInformRow>
                           <PlayerInformRow>
-                            <PlayerRecord>{game.white.win ? game.white.win : `0`} / {game.white.draw ? game.white.draw : `0`} / {game.white.lose ? game.white.lose : `0`} {`( ${game.white.win + game.white.draw === 0 ? `0` : `${(game.white.win * 100 / (game.white.win + game.white.lose)).toFixed(2)}`}% )`}</PlayerRecord>
+                            <PlayerRecord>{getRecordString(game.white.win,game.white.draw,game.white.lose)}</PlayerRecord>
                           </PlayerInformRow>
                         </PlayerRight>
                       </PlayerInforms>
@@ -272,7 +276,7 @@ const Lobby = (): ReactElement => {
                             <PlayerTitle>{game.black.title}</PlayerTitle>
                           </PlayerInformRow>
                           <PlayerInformRow>
-                            <PlayerRecord>{game.black.win ? game.black.win : `0`} / {game.black.draw ? game.black.draw : `0`} / {game.black.lose ? game.black.lose : `0`} {`( ${game.black.win + game.black.draw === 0 ? `0` : `${(game.black.win * 100 / (game.black.win + game.black.lose)).toFixed(2)}`}% )`}</PlayerRecord>
+                            <PlayerRecord>{getRecordString(game.black.win,game.black.draw,game.black.lose)}</PlayerRecord>
                           </PlayerInformRow>
                         </PlayerRight>
                       </PlayerInforms>

@@ -11,6 +11,11 @@ export const ProfileWrapWrap = styled.div`
   ${responsive('large')}{
     margin-top: 1rem;
   }
+  position: fixed;
+  z-index: 5;
+  ${responsive('large')}{
+    position: static;
+  }
 `
 
 export const ProfileWrap = styled.div`
@@ -71,16 +76,19 @@ export const NewGameButtonWrap = styled.div`
   ${alignCenter()}
   width: 15%;
 `
-export const NewGameButton = styled.button`
+export const NewGameButton = styled.div`
   height: 2.8rem;
   margin-left: 10%;
   margin-right: 10%;
   width: 80%;
   cursor: pointer;
-  border: none;
+  border: 1px solid rgba(0,0,0,0);
+  color: black;
   border-radius: 0.5rem;
   font-weight: bold;
   font-size:var(--font-size-sm);
+  ${alignCenter()}
+  text-align: center;
   ${responsive('large')}{
     font-size:var(--font-size-nm);
   }
@@ -96,6 +104,11 @@ export const NewGameButton = styled.button`
 export const LobbyBoxWrap = styled.div`
   width: 100%;
   ${alignCenter()}
+  
+  padding-top: 4rem;
+  ${responsive('large')}{
+    padding-top: 0;
+  }
 `
 
 export const LobbyBox = styled.div`
@@ -117,7 +130,15 @@ export const LobbyTitleWrap = styled.div`
   height: 2rem;
   background-color: var(--color-wdbl);
   ${alignCenter()}
-  border-radius: 0.5rem 0.5rem 0 0;
+  ${responsive('large')}{
+    border-radius: 0.5rem 0.5rem 0 0;
+  }
+
+  position: fixed;
+  z-index: 5;
+  ${responsive('large')}{
+    position: static;
+  }
 `
 
 export const GameList = styled.div`
@@ -127,19 +148,24 @@ export const GameList = styled.div`
   user-select: none;
   ${responsive('large')}{
     justify-content: flex-start;
+    height: 44rem;
+    overflow-Y: auto;
+    &::-webkit-scrollbar {
+      width: 15px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: white;
+      border-radius: 15px; 
+      border: 5.25px solid var(--color-wddk);
+    }
+    &::-webkit-scrollbar-track{
+      background-color: rgba(0,0,0,0);
+    }
   }
-  height: 44rem;
-  overflow-Y: auto;
-  &::-webkit-scrollbar {
-    width: 15px;
-  }
-  &::-webkit-scrollbar-thumb {
-    background-color: white;
-    border-radius: 15px; 
-    border: 5.25px solid var(--color-wddk);
-  }
-  &::-webkit-scrollbar-track{
-    background-color: rgba(0,0,0,0);
+  
+  padding-top: 2rem;
+  ${responsive('large')}{
+    padding-top: 0;
   }
 `
 
@@ -147,12 +173,15 @@ export const GameCard = styled.div`
   display:flex;
   flex-direction:column;
   height: 19rem;
-  width: 11rem;
+  width: 44%;
   margin: 0.8rem;
   border: 1px solid var(--color-wdk);
   border-radius: 0.5rem;
   background-color:var(--color-wdnm);
   cursor: pointer;
+  ${responsive('large')}{
+    width: 11rem;
+  }
 `
 
 export const GameNumber = styled.div`
@@ -176,6 +205,7 @@ export const PlayerInforms = styled.div`
   display:flex;
   padding-left: 0.5rem;
   padding-right: 0.5rem;
+  justify-content: space-between;
 `
 
 export const PlayerLeft = styled.div`
@@ -200,14 +230,15 @@ export const PlayerColor = styled.div<PlayerColorProps>`
 
 export const PlayerRight = styled.div`
   ${alignCenter()}
+  margin-right: 1rem;
 `
 
 export const PlayerInformRow = styled.div`
   display: flex;
   justify-content: right;
-  width: 7rem;
-  margin-right: 1rem;
+  width: 100%;
   font-size: var(--font-size-xs);
+  line-height: 0.6875rem;
 `
 
 export const PlayerName = styled.div`

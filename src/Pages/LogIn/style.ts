@@ -47,6 +47,7 @@ export const InputEmail = styled.input`
   padding: 0.5rem;
   background-color: var(--color-wdnm);
   border: 1px solid var(--color-wdsh);
+  color: var(--color-wsh);
   outline: none;
     &:focus {
     border: 1px solid var(--color-sh);
@@ -59,26 +60,28 @@ export const InputPW = styled.input`
   padding: 0.5rem;
   background-color: var(--color-wdnm);
   border: 1px solid var(--color-wdsh);
+  color: var(--color-wsh);
   outline: none;
     &:focus {
     border: 1px solid var(--color-sh);
   }
 `
 
-export const GoogleLogIn = styled.button`
+export const GoogleLogIn = styled.div`
   ${alignCenter()}
   width: 100%;
   height: 2rem;
   background-color: var(--color-wdnm);
   border-radius: 0.25rem;
-  border: none;
   outline: none;
   cursor: pointer;
   color: var(--color-sh);
-  &:hover{
-    background-color: var(--color-wdsh);
-    color: var(--color-wdbl);
-    transition: 0.5s;
+  ${responsive('large')}{
+    &:hover{
+      background-color: var(--color-wdsh);
+      color: var(--color-wdbl);
+      transition: 0.5s;
+    }
   }
 `
 
@@ -97,20 +100,23 @@ export const GoogleLogInString = styled.div`
   font-size: var(--font-size-sm);
 `
 
-export const LogInButton = styled.button`
+export const LogInButton = styled.div`
   width: 100%;
   height: 2.25rem;
   border-radius: 4px;
-  border: none;
+  border: 1px solid rgba(0,0,0,0);
+  color: black;
   outline: none;
   ${alignCenter()}
   cursor: pointer;
   background-color: var(--color-sh);
-  &:hover{
-    background-color: var(--color-wdnm);
-    color: var(--color-sh);
-    border: 1px solid var(--color-sh);
-    transition: 0.3s;
+  ${responsive('large')}{
+    &:hover{
+      background-color: var(--color-wdnm);
+      color: var(--color-sh);
+      border: 1px solid var(--color-sh);
+      transition: 0.3s;
+    }
   }
 `
 
@@ -125,20 +131,23 @@ export const LogInButtonString = styled.div`
   }
 `
 
-export const SignUpButton = styled.button`
+export const SignUpButton = styled.div`
   width: 100%;
   height: 2.25rem;
   border-radius: 4px;
-  border: none;
+  border: 1px solid rgba(0,0,0,0);
+  color: black;
   outline: none;
   ${alignCenter()}
   cursor: pointer;
   background-color: var(--color-wdsh);
-  &:hover{
-    background-color: var(--color-wdnm);
-    color: var(--color-sh);
-    border: 1px solid var(--color-sh);
-    transition: 0.3s;
+  ${responsive('large')}{
+    &:hover{
+      background-color: var(--color-wdnm);
+      color: var(--color-sh);
+      border: 1px solid var(--color-sh);
+      transition: 0.3s;
+    }
   }
 `
 
@@ -153,20 +162,23 @@ export const SignUpButtonString = styled.div`
   }
 `
 
-export const CancelButton = styled.button`
+export const CancelButton = styled.div`
   width: 100%;
   height: 2.25rem;
   border-radius: 4px;
-  border: none;
+  border: 1px solid rgba(0,0,0,0);
+  color: black;
   outline: none;
   ${alignCenter()}
   cursor: pointer;
   background-color: var(--color-sh);
-  &:hover{
-    background-color: var(--color-wdnm);
-    color: var(--color-sh);
-    border: 1px solid var(--color-sh);
-    transition: 0.3s;
+  ${responsive('large')}{
+    &:hover{
+      background-color: var(--color-wdnm);
+      color: var(--color-sh);
+      border: 1px solid var(--color-sh);
+      transition: 0.3s;
+    }
   }
 `
 

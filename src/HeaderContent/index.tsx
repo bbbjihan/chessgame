@@ -16,7 +16,7 @@ const HeaderContent = () => {
       .then(() => {
         movePage("/");
       })
-      .catch(err => console.log(err))
+      .catch(err => console.log(`onLogOutClick error : ` + err))
   }
   return (
     <HeaderWrap>

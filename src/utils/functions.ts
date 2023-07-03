@@ -46,3 +46,7 @@ export const capturedPiecesSort = (capturedPieces:string[]):string[] => {
     return sortValue[a] - sortValue[b];
   }))
 }
+
+export const getRecordString = (win:number, draw:number, lose:number) => {
+  return `${win ? win : `0`} / ${draw ? draw : `0`} / ${lose ? lose : `0`} ( ${win + draw === 0 ? `0` : `${(win * 100 / (win + lose)).toFixed(2)}`}% )`
+}

@@ -1,6 +1,6 @@
 import { selector } from "recoil";
 import { capturedPiecesSort, getNumberIndex, getPositionString } from "./functions";
-import { blackCapturedPiecesState, capturedState, castleState, destinationState, enPassantState, fullMoveState, halfMoveState, moveableSquareState, movingPieceState, movingStartState, positionArrState, positionState, turnState, whiteCapturedPiecesState } from "./recoil";
+import { blackCapturedPiecesState, capturedState, castleState, destinationState, enPassantState, fullMoveState, halfMoveState, moveableSquareState, movingPieceState, movingStartState, positionArrState, positionState, promotionPieceState, turnState, whiteCapturedPiecesState } from "./recoil";
 
 export const pieceMoveState = selector<void>({
   key: "pieceMoveState",
@@ -26,7 +26,10 @@ export const pieceMoveState = selector<void>({
     }
 
     //set fullMoveState
-    if(get(turnState) === "b") set(fullMoveState, get(fullMoveState) + 1);
+    if(get(turnState) === "b"){
+      const fullMove:number = get(fullMoveState);
+      set(fullMoveState,(parseInt(fullMove.toString()) + 1))
+    };
     
     //set enpassantState
     if(movingPiece === "P" && movingStart[1] === '2' && destination[1] === '4'){
@@ -88,13 +91,7 @@ export const pieceMoveState = selector<void>({
       }
     }
 
-    result[startRow][startCol] = "";
-    result[destiRow][destiCol] = movingPiece;
-
-    const resultString = getPositionString(result);
-    //console.log(`move ${movingPiece} from ${movingStart}(${startRow}/${startCol}) to ${destination}(${destiRow}/${destiCol}), result is ${resultString}.`)
-    set(positionState, resultString);
-    
+    //handle castling posibility
     let castle: string|string[] = get(castleState);
     if(!(castle === "-")){
       castle = castle.split('');
@@ -114,13 +111,38 @@ export const pieceMoveState = selector<void>({
         castle = castle.filter((x) => x !== "q" && x !== "k");
       }else if(movingPiece === "K"){
         castle = castle.filter((x) => x !== "Q" && x !== "K");
+      }else if(destination === "a8"){
+        castle = castle.filter((x) => x !== "q");
+      }else if(destination === "h8"){
+        castle = castle.filter((x) => x !== "k");
+      }else if(destination === "a0"){
+        castle = castle.filter((x) => x !== "Q");
+      }else if(destination === "h0"){
+        castle = castle.filter((x) => x !== "K");
       }
+
       if(castle.length === 0){
         set(castleState, "-");
       }else{
         set(castleState, castle.join(''));
       }
     }
+
+    result[startRow][startCol] = "";
+
+    const promotionPiece = get(promotionPieceState);
+    //handle promotion
+    if(destiRow === 0 && movingPiece === "P"){
+      result[destiRow][destiCol] = promotionPiece;
+    }else if(destiRow === 7 && movingPiece === "p"){
+      result[destiRow][destiCol] = promotionPiece.toLowerCase();
+    }else{
+      result[destiRow][destiCol] = movingPiece;
+    }
+    
+    const resultString = getPositionString(result);
+    //console.log(`move ${movingPiece} from ${movingStart}(${startRow}/${startCol}) to ${destination}(${destiRow}/${destiCol}), result is ${resultString}.`)
+    set(positionState, resultString);
   })
 })
 

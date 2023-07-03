@@ -52,28 +52,18 @@ export const InputOpponent = styled.input`
   background-color: var(--color-wdnm);
   border: 1px solid var(--color-wdsh);
   outline: none;
-    &:focus {
+  color: var(--color-wsh);
+  &:focus {
     border: 1px solid var(--color-sh);
   }
 `
 
-export const InputPW = styled.input`
-  width: 100%;
-  border-radius: 0.25rem;
-  padding: 0.5rem;
-  background-color: var(--color-wdnm);
-  border: 1px solid var(--color-wdsh);
-  outline: none;
-    &:focus {
-    border: 1px solid var(--color-sh);
-  }
-`
-
-export const NewGameButton = styled.button`
+export const NewGameButton = styled.div`
   width: 100%;
   height: 2.25rem;
   border-radius: 4px;
-  border: none;
+  border: 1px solid rgba(0,0,0,0);
+  color: black;
   outline: none;
   ${alignCenter()}
   cursor: pointer;

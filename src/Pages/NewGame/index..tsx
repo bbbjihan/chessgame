@@ -16,6 +16,14 @@ const NewGame = () => {
   const movePage = useNavigate();
   const auth = getAuth(firebaseApp);
   const [gameNum, setGameNum] = useRecoilState(gameNumState);
+  const [currentUserInform, setCurrentUserInform] = useState<UserInform>({
+    userID: "",
+    name: "",
+    title: "",
+    win: 0,
+    lose: 0,
+    draw: 0
+  });
 
   //userInform set
   useEffect(() => {
@@ -31,23 +39,37 @@ const NewGame = () => {
       } }));
       setUserInforms(newData)
     }
-    fetchUserInforms().catch(err => console.log(err));
+    fetchUserInforms()
+    .catch(err => console.log(`featchUserInforms err : ` + err));
   }, []);
+
+  //userInform set
+  useEffect(() => {
+    const redirectLobby = async () => {
+      if (!auth.currentUser) {
+        movePage("/");
+      } else {
+        const data = await getDocs(query(collection(db, "user"), where("userID", "==", auth.currentUser?.uid)));
+        const newData = data.docs.map(doc => ({ ...doc.data() }))[0];
+        const userInform: UserInform = {
+          userID: (newData.userID ? newData.userID : ``),
+          name: (newData.name ? newData.name : ``),
+          title: (newData.title ? newData.title : ``),
+          win: (newData.win ? parseInt(newData.win) : 0),
+          lose: (newData.lose ? parseInt(newData.lose) : 0),
+          draw: (newData.draw ? parseInt(newData.draw) : 0)
+        }
+        setCurrentUserInform(userInform);
+      }
+    }
+    redirectLobby()
+    .catch(err => console.log(`redirectLobby err : ` + err));
+  }, [auth.currentUser, movePage]);
 
   const createNewGame = async(opponentInform:UserInform) => {
     if (!auth.currentUser) {
       movePage("/");
     } else {
-      const data = await getDocs(query(collection(db, "user"), where("userID", "==", auth.currentUser?.uid)));
-      const currentUserInform = data.docs.map(doc => ({ ...{
-        userID: (doc.id ? doc.id : ""),
-        name: (doc.data().name ? doc.data().name : ""),
-        title: (doc.data().title ? doc.data().title : ""),
-        win: (doc.data().win ? doc.data().win : 0),
-        draw: (doc.data().draw ? doc.data().draw : 0),
-        lose: (doc.data().lose ? doc.data().lose : 0) 
-      } }))[0];
-
       setGameNum(prev => prev + 1);
       const time = new Date();
       const timeString = time.toISOString();
@@ -73,7 +95,7 @@ const NewGame = () => {
       .then(() => {
         movePage('/lobby');
       })
-      .catch(err => console.log(err));
+      .catch(err => console.log(`addDoc err : ` + err));
     }
   }
 

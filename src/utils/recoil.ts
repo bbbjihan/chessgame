@@ -167,3 +167,8 @@ export const gameNumState = atom<number>({
   key: "gamaNumState",
   default: 0
 })
+
+export const promotionPieceState = atom<string>({
+  key: "promotionPieceState",
+  default: "Q"
+})

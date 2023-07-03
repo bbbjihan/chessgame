@@ -14,7 +14,6 @@ export const Left = styled.div`
   height: 5rem;
   background-color: var(--color-wddk);
   ${alignCenter()}
-  border-radius: 0 0.5rem 0 0.5rem;
   ${responsive('large')}{
     border-radius: 0.5rem;
   }

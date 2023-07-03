@@ -16,7 +16,9 @@ export const Top = styled.div`
   background-color: var(--color-wdbl);
   color: white;
   display:flex;
-  border-radius: 0.5rem 0.5rem 0 0;
+  ${responsive('large')}{
+    border-radius: 0.5rem 0.5rem 0 0;
+  }
 `
 
 export const TopLeft = styled.div`
@@ -114,7 +116,9 @@ export const TimeMachineRow = styled.div`
 export const Bottom = styled.div`
   width: 100%;
   height: 3rem;
-  border-radius: 0 0 0.5rem 0.5rem;
+  ${responsive('large')}{
+    border-radius: 0 0 0.5rem 0.5rem;
+  }
 `
 
 export const ForMaxWidth = styled.div`
