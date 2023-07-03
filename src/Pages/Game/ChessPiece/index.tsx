@@ -1,26 +1,19 @@
 import { ReactElement } from "react";
-import { useSetRecoilState } from "recoil";
-import { renderMoveablePointState } from "../../../utils/pieceMove";
-import { movingPieceState, movingStartState } from "../../../utils/recoil";
+import { setUseStateType } from "../../../utils/interfaces";
 import PieceImg from './PieceImg';
 import { ChessPieceWrap } from "./style";
 
 interface ChessPieceProps {
   piece: string
-  squareIndex: string
-  row: number
-  col: number
+  squareIndex: string,
+  setMovingPiece: setUseStateType<string>,
+  setMovingStart: setUseStateType<string>
 }
 
-const ChessPiece = ({ piece, squareIndex }: ChessPieceProps): ReactElement => {
-  const setMovingPiece = useSetRecoilState(movingPieceState);
-  const setMovingStart = useSetRecoilState(movingStartState);
-  const renderMoveablePoint = useSetRecoilState(renderMoveablePointState);
-
+const ChessPiece = ({ piece, squareIndex, setMovingPiece, setMovingStart }: ChessPieceProps): ReactElement => {
   const handleMove = () => {
     setMovingPiece(piece);
     setMovingStart(squareIndex);
-    renderMoveablePoint();
   }
 
   return (

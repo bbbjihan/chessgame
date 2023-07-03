@@ -49,7 +49,7 @@ export const Board = styled.div<BoardProps>`
   }
 `
 
-export const Row = styled.div`
+export const BoardRow = styled.div`
   display: block;
   width: 100%;
   height: 12.5%;

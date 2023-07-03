@@ -1,11 +1,11 @@
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { checkMatedState, checkedState, drawState } from "../../../utils/checkChecked";
-import { notationState } from "../../../utils/notation";
-import { rotateState, turnState } from "../../../utils/recoil";
+import { ReactElement } from 'react';
+import { setUseStateType } from "../../../utils/interfaces";
 import { Bottom, ForMaxWidth, GameInformWrap, GameStateRow, Middle, NotationBlack, NotationNum, NotationRow, NotationWhite, NotationWrap, RotateButton, RotateButtonWrap, TimeMachineRow, Top, TopLeft, TopRight } from "./style";
 
-const RenderNotation = () => {
-  const notations = useRecoilValue(notationState);
+interface RenderNotationProps{
+  notations: string[]
+}
+const RenderNotation = ({notations}:RenderNotationProps):ReactElement => {
   let rows = []
   let row = [];
   for (let i = 0; i < notations.length; i++) {
@@ -32,11 +32,13 @@ const RenderNotation = () => {
   </>);
 }
 
-const GameState = () => {
-  const checked = useRecoilValue(checkedState);
-  const checkMated = useRecoilValue(checkMatedState);
-  const isDraw = useRecoilValue(drawState);
-  const turn = useRecoilValue(turnState);
+interface GameStateProps{
+  checked: boolean[],
+  checkMated: boolean[],
+  isDraw: boolean,
+  turn: string
+}
+const GameState = ({checked,checkMated,isDraw,turn}:GameStateProps):ReactElement => {
   if (checkMated[0]) {
     return (
       <TopLeft>
@@ -110,12 +112,25 @@ const GameState = () => {
     </TopLeft>)
 }
 
-const GameInform = () => {
-  const setRotate = useSetRecoilState(rotateState);
+interface GameInformProps {
+  notation: string[],
+  setRotate: setUseStateType<boolean>,
+  checked: boolean[],
+  checkMated: boolean[],
+  isDraw: boolean,
+  turn: string
+}
+
+const GameInform = ({ notation, setRotate, checked, checkMated, isDraw, turn} : GameInformProps):ReactElement => {
   return (
     <GameInformWrap>
       <Top>
-        <GameState />
+        <GameState
+          checked={checked}
+          checkMated={checkMated}
+          isDraw={isDraw}
+          turn={turn}
+        />
         <TopRight>
           <RotateButtonWrap>
             <RotateButton
@@ -130,7 +145,9 @@ const GameInform = () => {
         <NotationWrap
           scrollHeight=""
         >
-          <RenderNotation />
+          <RenderNotation
+            notations={notation}
+          />
         </NotationWrap>
       </Middle>
       <TimeMachineRow>

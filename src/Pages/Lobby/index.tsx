@@ -11,9 +11,6 @@ import PieceImg from '../Game/ChessPiece/PieceImg';
 import { firebaseApp } from './../../firebase';
 import { BoardWrap, GameCard, GameCardBoard, GameCardPlayers, GameCardState, GameList, GameNumber, LobbyBox, LobbyBoxWrap, LobbyPageWrap, LobbyTitle, LobbyTitleWrap, NewGameButton, NewGameButtonWrap, PlayerColor, PlayerInformRow, PlayerInforms, PlayerLeft, PlayerName, PlayerRecord, PlayerRight, PlayerTitle, ProfileLine, ProfileWrap, ProfileWrapWrap, Square, UserName, UserNameWrap, UserProfile, UserRecord, UserRecordWrap, UserTitle, UserTitleWrap } from "./style";
 
-import { notationState } from '../../utils/notation';
-import { blackCapturedPiecesState, castleState, enPassantState, fullMoveState, halfMoveState, positionState, turnState, whiteCapturedPiecesState } from "../../utils/recoil";
-import { blackPlayerState, whitePlayerState } from '../../utils/userAtoms';
 import { getRecordString } from './../../utils/functions';
 interface RenderBoardProps {
   FEN: string
@@ -156,45 +153,10 @@ const Lobby = (): ReactElement => {
     .catch(err => console.log(`redirectLobby err : ` + err));
   }, [auth.currentUser, movePage]);
 
-  //for enter game page
-  const setWhiteCapturedPieces = useSetRecoilState(whiteCapturedPiecesState);
-  const setBlackCapturedPieces = useSetRecoilState(blackCapturedPiecesState);
-  const setPosition = useSetRecoilState(positionState);
-  const setTurn = useSetRecoilState(turnState);
-  const setCastle = useSetRecoilState(castleState);
-  const setEnPassant = useSetRecoilState(enPassantState);
-  const setHalfMove = useSetRecoilState(halfMoveState);
-  const setFullMove = useSetRecoilState(fullMoveState);
-  const setNotation = useSetRecoilState(notationState);
-  const setWhitePlayer = useSetRecoilState(whitePlayerState);
-  const setBlackPlayer = useSetRecoilState(blackPlayerState);
   
-  const fetchGame = async(gameID:string) => {
-    const data = await getDocs(query(collection(db, "game")));
-    data.forEach(doc => {
-      if(doc.id === gameID){
-        setWhitePlayer(doc.data().white);
-        setBlackPlayer(doc.data().black);
-        setWhiteCapturedPieces([ ...doc.data().captured ].filter(x => (x === x.toUpperCase())))
-        setBlackCapturedPieces([ ...doc.data().captured ].filter(x => (x !== x.toUpperCase())))
-        const [position, turn, castle, enpassant, halfMove, fullMove] = doc.data().FEN.split(' ');
-        setPosition(position);
-        setTurn(turn);
-        setCastle(castle);
-        setEnPassant(enpassant);
-        setHalfMove(halfMove);
-        setFullMove(fullMove);
-        setNotation(doc.data().notation);
-      }
-    })
-  }
 
   const onGameCardClick = (gameID:string) => {
-    fetchGame(gameID)
-    .then(() => {
-      movePage(`/game?ID=${gameID}`)
-    })
-    .catch(err => console.log(`onGameCardClick err : ` + err));
+    movePage(`/game?ID=${gameID}`)
   }
 
   const onNewGameClick = () => {
