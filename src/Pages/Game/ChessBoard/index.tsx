@@ -1,4 +1,7 @@
+import { doc, updateDoc } from 'firebase/firestore';
 import { ReactElement, useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { db } from '../../../firebase';
 import { capturedPiecesSort, getNumberIndex, getPositionString, getSquareIndex } from "../../../utils/functions";
 import { setUseStateType } from '../../../utils/interfaces';
 import { getPieceMoveablePointToArr } from '../../../utils/pieceMove';
@@ -14,6 +17,11 @@ interface ChessBoardProps {
   promotionPiece: string,
   checked: boolean[],
   checkMated: boolean[],
+  halfMove: number,
+  fullMove: number,
+  whiteCapturedPieces: string[],
+  blackCapturedPieces: string[],
+  notation: string[],
   setChecked: setUseStateType<boolean[]>,
   setCheckMated: setUseStateType<boolean[]>,
   setIsDraw: setUseStateType<boolean>,
@@ -28,7 +36,7 @@ interface ChessBoardProps {
   setPosition: setUseStateType<string>,
 }
 
-const ChessBoard = ({ position, rotate, enPassant, castle, turn, setChecked, setCheckMated, setIsDraw, setTurn, setNotation, setWhiteCapturedPieces, setBlackCapturedPieces, setHalfMove, setFullMove, setEnPassant, setCastle, promotionPiece, setPosition, checked, checkMated }: ChessBoardProps): ReactElement => {
+const ChessBoard = ({ position, rotate, enPassant, castle, turn, halfMove, fullMove, whiteCapturedPieces, blackCapturedPieces, notation, setChecked, setCheckMated, setIsDraw, setTurn, setNotation, setWhiteCapturedPieces, setBlackCapturedPieces, setHalfMove, setFullMove, setEnPassant, setCastle, promotionPiece, setPosition, checked, checkMated }: ChessBoardProps): ReactElement => {
   const [positionArr, setPositionArr] = useState(new Array(8).fill("").map(() => new Array(8).fill("")));
   const [moveableSquare, setMoveableSquare] = useState<boolean[][]>(new Array(8).fill(false).map(() => new Array(8).fill(false)));
   const [whiteWholeMoveableSquare, setWhiteWholeMoveableSquare] = useState(new Array(8).fill(false).map(() => new Array(8).fill(false)));
@@ -146,10 +154,11 @@ const ChessBoard = ({ position, rotate, enPassant, castle, turn, setChecked, set
   }, [movingPiece, movingStart, castle, positionArr, enPassant, turn])
 
   //pieceMove when clicked moveablePoint
+  const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
-    if (destination === "") {
-      return
-    } else {
+    if(destination === "") return;
+    const pieceMove = async() => {
+      if(destination === "") return Error;
       let captured = false;
       //pieceMove
       let result: string[][] = new Array(8).fill("").map(() => new Array(8).fill(""))
@@ -276,9 +285,7 @@ const ChessBoard = ({ position, rotate, enPassant, castle, turn, setChecked, set
 
       const resultString = getPositionString(result);
       //console.log(`move ${movingPiece} from ${movingStart}(${startRow}/${startCol}) to ${destination}(${destiRow}/${destiCol}), result is ${resultString}.`)
-      setPosition(resultString);
-
-      //setNotations
+      setPosition(resultString);//setNotations
       let newNot = ``;
       if ((movingPiece === "K" || movingPiece === "k") && Math.abs(getNumberIndex(movingStart)[1] - getNumberIndex(destination)[1]) > 1) {
         if (getNumberIndex(destination)[1] === 6) {//kingside castle
@@ -305,16 +312,36 @@ const ChessBoard = ({ position, rotate, enPassant, castle, turn, setChecked, set
       if (checkMated[0] || checkMated[1]) newNot += `#`;
       else if (checked[0] || checked[1]) newNot += `+`;
       setNotation(prev => [...prev, newNot])
-
+    }
+    pieceMove()
+    .then(() => {
       setTurn((prev) => prev === "w" ? "b" : "w");
-
       setMoveableSquare(new Array(8).fill(false).map(() => new Array(8).fill(false)));
       setMovingPiece("");
       setMovingStart("");
       setDestination("");
-    }
+    })
+    .catch(err => console.log(`pieceMove error : ` + err))
   }, [destination])
 
+  //pieceMove upload when piece moved
+  useEffect(() => {
+    if(position === "8/8/8/8/8/8/8/8") return;
+    const uploadMove = async() => {
+      const gameID = searchParams.get("ID");
+      if(typeof gameID === "string"){
+        const docRef = doc(db,"game",gameID);
+        updateDoc(docRef, {
+          FEN: `${position} ${turn} ${castle} ${enPassant} ${halfMove} ${fullMove}`,
+          captured: [...whiteCapturedPieces, ...blackCapturedPieces],
+          notation: notation
+        })
+      }
+    }
+    uploadMove()
+    .catch(err => console.log(`uploadMove error : ` + err))
+  },[notation])
+  
   return (
     <BoardWrap>
       <BoardBlock>
